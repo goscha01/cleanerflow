@@ -46,7 +46,7 @@ export default function PreferredTimes({ form }) {
   }, [selectedDate, selectedTimes]);
 
   return (
-    <div className="px-6">
+    <div className="md:px-6 px-0">
       <h2 className="text-2xl font-bold text-gray-800">Your Preferred Times</h2>
       <p className="text-[16px] text-gray-600 mb-12 text-justify">
         Pick a few time slots that fit your schedule, and we’ll confirm the best
