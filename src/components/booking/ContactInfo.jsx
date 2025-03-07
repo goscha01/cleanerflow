@@ -4,11 +4,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SuccessModal from "@/components/ui/successModal";
 import emailjs from "emailjs-com";
 
-const ADMIN_EMAIL = "mtalhach008@gmail.com";
-const SERVICE_ID = "book_online";
-const USER_ID = "pVK3WvgavBmpPr8t-";
-const ADMIN_TEMPLATE_ID = "template_1opfsbi";
-const USER_TEMPLATE_ID = "template_e3308ey";
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
+const USER_ID = import.meta.env.VITE_USER_ID;
+const ADMIN_TEMPLATE_ID = import.meta.env.VITE_ADMIN_TEMPLATE_ID;
+const USER_TEMPLATE_ID = import.meta.env.VITE_USER_TEMPLATE_ID;
 
 export default function ContactInfo({ form }) {
   const formData = form.watch();
