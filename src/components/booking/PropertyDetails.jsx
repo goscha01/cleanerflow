@@ -168,7 +168,7 @@ export default function PropertyDetails({ form }) {
           Therefore, if you have 1 full-sized bathroom and 1 half-bathroom, it
           will be considered as 2 bathrooms in total.
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-1">
           {bathrooms.map((num) => (
             <motion.div
               key={num}
