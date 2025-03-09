@@ -41,6 +41,7 @@ export default function Booking() {
   };
 
   const handleServiceSelect = (serviceType) => {
+    form.reset();
     form.setValue("serviceType", serviceType);
     setShowBookingSteps(true);
   };

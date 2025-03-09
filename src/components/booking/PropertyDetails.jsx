@@ -22,8 +22,11 @@ export default function PropertyDetails({ form, nextStep }) {
   const [selectedRequirement, setSelectedRequirement] = useState(null);
 
   const scrollToSection = (ref) => {
+    const offset = 100;
     if (ref.current) {
-      ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      const top =
+        ref.current.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: "smooth" });
     }
   };
   // Validation error scroll handling
@@ -99,7 +102,13 @@ export default function PropertyDetails({ form, nextStep }) {
     <div className="space-y-8">
       <section ref={bedroomsRef}>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Number of Bedrooms <span className="text-red-500">*</span>
+          Number of Bedrooms <span className="text-red-500">*</span>{" "}
+          {form.formState.errors.bedrooms && (
+            <div className="flex items-center gap-2 mt-2 text-red-500">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-sm">Please select number of bedrooms</span>
+            </div>
+          )}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
           {bedrooms.map((num) => (
@@ -127,17 +136,17 @@ export default function PropertyDetails({ form, nextStep }) {
             </motion.div>
           ))}
         </div>
-        {form.formState.errors.bedrooms && (
-          <div className="flex items-center gap-2 mt-2 text-red-500">
-            <AlertCircle className="h-4 w-4" />
-            <span className="text-sm">Please select number of bedrooms</span>
-          </div>
-        )}
       </section>
 
       <section ref={bathroomsRef}>
         <h2 className="text-xl font-semibold text-gray-900 mb-2 mt-16">
           Number of Bathrooms <span className="text-red-500">*</span>
+          {form.formState.errors.bathrooms && (
+            <div className="flex items-center gap-2 mt-2 text-red-500">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-sm">Please select number of bathrooms</span>
+            </div>
+          )}
         </h2>
         <p className="text-[16px] text-gray-600 mb-6 text-justify">
           For our service, a "bathroom" can be a full-sized bathroom (with a tub
@@ -171,12 +180,6 @@ export default function PropertyDetails({ form, nextStep }) {
             </motion.div>
           ))}
         </div>
-        {form.formState.errors.bathrooms && (
-          <div className="flex items-center gap-2 mt-2 text-red-500">
-            <AlertCircle className="h-4 w-4" />
-            <span className="text-sm">Please select number of bathrooms</span>
-          </div>
-        )}
       </section>
 
       <section ref={extrasRef}>
@@ -260,6 +263,12 @@ export default function PropertyDetails({ form, nextStep }) {
       <section ref={conditionRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-2">
           Property Condition <span className="text-red-500">*</span>
+          {form.formState.errors.propertyCondition && (
+            <div className="flex items-center gap-2 mt-2 text-red-500">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-sm">Please select property condition</span>
+            </div>
+          )}
         </h2>
         <p className="text-[16px] text-gray-600 mb-6">
           How would you rate your property condition in the rate from 1 dirty to
@@ -292,12 +301,6 @@ export default function PropertyDetails({ form, nextStep }) {
             </motion.div>
           ))}
         </div>
-        {form.formState.errors.propertyCondition && (
-          <div className="flex items-center gap-2 mt-2 text-red-500">
-            <AlertCircle className="h-4 w-4" />
-            <span className="text-sm">Please select property condition</span>
-          </div>
-        )}
       </section>
 
       <section ref={petRef}>
