@@ -328,7 +328,7 @@ export const pricingData = [
 export const extras = [
   {
     id: "cabinet",
-    label: "Inside Cabinet",
+    label: "Kitchen cabintet",
     price: 30,
     image: "/extras/cabinets.png",
     description: "Kitchen cabinets",
@@ -356,14 +356,14 @@ export const extras = [
   },
   {
     id: "window",
-    label: "Interior Windows Inside",
+    label: "Windows",
     price: 20,
     image: "/extras/windows.png",
     description: "4 windows included, Price for every additional",
   },
   {
     id: "dish",
-    label: "Dish",
+    label: "Dishes",
     price: 20,
   },
   {
