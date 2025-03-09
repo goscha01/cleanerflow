@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-// import { IoLocationOutline } from "react-icons/io5";
 import { pricingData } from "@/constants/price";
 
 const calculatePrice = (formData) => {
@@ -68,25 +67,17 @@ const calculatePrice = (formData) => {
 
   if (formData.hasPets) basePrice += 20;
 
-  // let discount = 0;
-  // switch (formData.recurringPlan) {
-  //   case "weekly":
-  //     discount = 0.15;
-  //     break;
-  //   case "biweekly":
-  //     discount = 0.1;
-  //     break;
-  //   case "monthly":
-  //     discount = 0.1;
-  //     break;
-  // }
+  let discount = 0;
+  if (formData.recurringPlan > 0) {
+    discount = 0.15;
+  }
 
-  // const discountAmount = basePrice * discount;
-  // basePrice -= discountAmount;
+  const discountAmount = basePrice * discount;
+  basePrice -= discountAmount;
 
   return {
-    // subtotal: Math.round(basePrice + discountAmount),
-    // discount: Math.round(discountAmount),
+    subtotal: Math.round(basePrice + discountAmount),
+    discount: Math.round(discountAmount),
     total: Math.round(basePrice),
   };
 };
@@ -99,8 +90,8 @@ export default function PricingCard({ form }) {
     form.setValue("totalPrice", total);
   }, []);
 
-  // const { subtotal, discount, total } = calculatePrice(formData);
-  const { total } = calculatePrice(formData);
+  const { subtotal, discount, total } = calculatePrice(formData);
+  // const { total } = calculatePrice(formData);
   return (
     <Card className="sticky top-24 hidden lg:block">
       <CardContent className="p-6 px-0 pb-0">
@@ -192,18 +183,18 @@ export default function PricingCard({ form }) {
               </div>
             </div>
           )}
-          {/* {discount > 0 && (
+          {discount > 0 && (
             <div className="pt-4 border-t px-6 pb-2">
               <div className="flex justify-between text-md font-semibold">
                 <span>Subtotal</span>
                 <span>${subtotal}</span>
               </div>
               <div className="flex justify-between text-green-600">
-                <span>Recurring Plan Discount</span>
+                <span>Recurring Plan Discount (15%)</span>
                 <span>-${discount}</span>
               </div>
             </div>
-          )} */}
+          )}
           <div className="pt-4 border-t px-6 pb-2">
             <motion.div
               className="flex justify-between text-md font-semibold"

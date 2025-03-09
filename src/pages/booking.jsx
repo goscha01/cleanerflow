@@ -8,7 +8,6 @@ import PropertyDetails from "@/components/booking/PropertyDetails";
 import PreferredTimes from "@/components/booking/PreferredTimes";
 import PricingCard from "@/components/booking/PricingCard";
 import ServiceAddress from "@/components/booking/ServiceAddress";
-// import RecurringPlan from "@/components/booking/RecurringPlan";
 import ContactInfo from "@/components/booking/ContactInfo";
 import Detail from "@/components/booking/Detail";
 const TOTAL_STEPS = 5;
@@ -33,7 +32,7 @@ export default function Booking() {
       preferredTime: "",
       streetAddress: "",
       contactInfo: "",
-      // recurringPlan: "",
+      recurringPlan: null,
     },
   });
 
@@ -61,7 +60,6 @@ export default function Booking() {
       case 2:
         return form.getValues("streetAddress");
       case 3:
-        // return form.getValues("recurringPlan");
         return form.getValues("contactInfo");
       default:
         return false;
@@ -163,7 +161,6 @@ export default function Booking() {
                           {currentStep === 2 && (
                             <ServiceAddress form={form} nextStep={nextStep} />
                           )}
-                          {/* {currentStep === 3 && <RecurringPlan form={form} />} */}
                           {currentStep === 3 && (
                             <ContactInfo
                               form={form}

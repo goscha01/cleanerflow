@@ -11,6 +11,7 @@ const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
 const USER_ID = import.meta.env.VITE_USER_ID;
 const ADMIN_TEMPLATE_ID = import.meta.env.VITE_ADMIN_TEMPLATE_ID;
 const USER_TEMPLATE_ID = import.meta.env.VITE_USER_TEMPLATE_ID;
+const VITE_COUPON_CODE = import.meta.env.VITE_COUPON_CODE;
 
 export default function ContactInfo({ form, currentStep, setCurrentStep }) {
   const navigate = useNavigate();
@@ -18,6 +19,9 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
   const [sendNotifications, setSendNotifications] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [coupon, setCoupon] = useState("");
+  const [couponError, setCouponError] = useState("");
 
   useEffect(() => {
     const validateForm = () => {
@@ -78,6 +82,20 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
     }
   };
 
+  const handleModalOpen = () => {
+    setShowModal(true);
+    form.setValue("recurringPlan", 0);
+  };
+  const handleCouponApply = () => {
+    if (coupon === VITE_COUPON_CODE) {
+      form.setValue("recurringPlan", Number(coupon));
+      setShowModal(false);
+      setCouponError("");
+    } else {
+      setCouponError("Invalid coupon code. Please try again.");
+    }
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-semibold text-gray-700 mb-1">
@@ -125,7 +143,15 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
           Send me notifications about this service request via text message
         </label>
       </div>
-      <div className="mt-8 flex justify-start">
+      <div className="mt-4">
+        <Button
+          onClick={handleModalOpen}
+          className="bg-transparent hover:bg-transparent hover:text-primaryHover text-primary text-lg font-extrabold"
+        >
+          Apply Coupon
+        </Button>
+      </div>
+      <div className="mt-4 flex justify-start">
         <Button
           onClick={handleSubmit}
           type="button"
@@ -146,6 +172,45 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
           )}
         </Button>
       </div>
+      {/* Coupon Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
+          <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg">
+            <h2 className="text-xl font-bold mb-4">Enter Coupon Code</h2>
+
+            <Input
+              placeholder="Enter your coupon code"
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
+              className="w-full py-2 px-4 border border-gray-300 rounded-lg mb-4"
+            />
+            {couponError && (
+              <p className="text-red-500 text-sm mb-4">{couponError}</p>
+            )}
+
+            <div className="flex justify-end gap-4">
+              <Button
+                onClick={() => setShowModal(false)}
+                className="bg-trasparent border border-primary hover:text-white px-6 py-2 rounded-lg"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={handleCouponApply}
+                disabled={!coupon}
+                className={`px-6 py-2 rounded-lg ${
+                  coupon
+                    ? "bg-primary hover:bg-primaryHover text-white"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Apply
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
