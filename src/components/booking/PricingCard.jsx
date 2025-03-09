@@ -3,16 +3,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 // import { IoLocationOutline } from "react-icons/io5";
-import pricingData from "@/constants/price";
+import { pricingData } from "@/constants/price";
 
 const calculatePrice = (formData) => {
   let basePrice = 0;
-
   function getBasePrice(serviceType, bedrooms, bathrooms) {
     const foundPrice = pricingData.find(
       (item) => item.bedrooms == bedrooms && item.bathrooms == bathrooms
     );
-    return foundPrice ? foundPrice[serviceType] : 0;
+    if (foundPrice) {
+      formData.square_feet = foundPrice.square_feet;
+      return {
+        price: Number(foundPrice[serviceType]) || 0,
+        square_feet: foundPrice.square_feet,
+      };
+    }
+    return { price: 0, square_feet: "N/A" };
   }
 
   const initialBasePrice = (() => {
@@ -30,15 +36,15 @@ const calculatePrice = (formData) => {
     }
   })();
 
-  const dynamicBasePrice =
+  const { price } =
     getBasePrice(formData.serviceType, formData.bedrooms, formData.bathrooms) ||
     0;
 
-  basePrice = Math.max(initialBasePrice, dynamicBasePrice);
+  basePrice = Math.max(initialBasePrice, price);
 
   switch (formData.propertyCondition) {
     case "Well maintained":
-      basePrice += 20;
+      basePrice += 0;
       break;
     case "Fair":
       basePrice += 100;
@@ -55,6 +61,7 @@ const calculatePrice = (formData) => {
     if (formData.extras.includes("laundry")) basePrice += 20;
     if (formData.extras.includes("window")) basePrice += 20;
     if (formData.extras.includes("dish")) basePrice += 20;
+    if (formData.extras.includes("glass-door")) basePrice += 20;
     if (formData.extras.includes("door")) basePrice += 50;
     if (formData.extras.includes("garage")) basePrice += 50;
   }
@@ -94,7 +101,6 @@ export default function PricingCard({ form }) {
 
   // const { subtotal, discount, total } = calculatePrice(formData);
   const { total } = calculatePrice(formData);
-
   return (
     <Card className="sticky top-24 hidden lg:block">
       <CardContent className="p-6 px-0 pb-0">
@@ -120,6 +126,11 @@ export default function PricingCard({ form }) {
               <span>{`${formData.bathrooms} ${
                 formData.bathrooms === 1 ? "bathroom" : "bathrooms"
               }`}</span>{" "}
+            </div>
+          )}
+          {formData.square_feet != null && (
+            <div className="flex justify-between text-md text-gray-600 px-6">
+              <span>{`${formData.square_feet} Sq. Feet`}</span>{" "}
             </div>
           )}
           {formData.extras?.length > 0 && (
@@ -167,7 +178,7 @@ export default function PricingCard({ form }) {
             </>
           )}
           {formData.streetAddress && (
-            <div className="pt-8 pb-2 border-t text-md text-gray-600 px-6">
+            <div className="pt-8 pb-2 border-t text-lg text-gray-600 px-6">
               <div className="flex justify-between">
                 {/* <IoLocationOutline /> */}
                 <span className="text-right">{formData.streetAddress}</span>
@@ -175,7 +186,7 @@ export default function PricingCard({ form }) {
             </div>
           )}
           {formData.unitNumber && (
-            <div className="text-md text-gray-600 px-6 pb-4">
+            <div className="text-lg text-gray-600 px-6 pb-4">
               <div className="flex justify-between">
                 <span className="text-right">{formData.unitNumber}</span>
               </div>
@@ -200,13 +211,13 @@ export default function PricingCard({ form }) {
               transition={{ duration: 0.3 }}
             >
               <span>Today's Total</span>
-              <span className="text-[#2196F3] font-bold text-lg">${total}</span>
+              <span className="text-primary font-bold text-xl">${total}</span>
             </motion.div>
           </div>
           <div className="pt-4 border-t px-6 pb-6 bg-gray-50 ">
             <div>
               <h3 className="font-bold">Service Request</h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-md text-gray-600">
                 This is a service request. We’ll review your selected times and
                 confirm availability as soon as possible.
               </p>

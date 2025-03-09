@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { format, addDays, isWeekend } from "date-fns";
 import { enUS } from "date-fns/locale";
+import { Button } from "@/components/ui/button";
 
 const timeSlots = [
   "9 AM - 10 AM",
@@ -18,7 +19,7 @@ const timeSlots = [
   "5 PM - 6 PM",
 ];
 
-export default function PreferredTimes({ form }) {
+export default function PreferredTimes({ form, nextStep }) {
   const selectedDate = form.watch("preferredDate");
   const selectedTimes = form.watch("preferredTime") || [];
 
@@ -115,6 +116,20 @@ export default function PreferredTimes({ form }) {
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
         </CardContent>
       </Card>
+      <div className="mt-8 flex justify-start">
+        <Button
+          type="button"
+          onClick={nextStep}
+          disabled={!!error}
+          className={`px-16 py-6 text-white ${
+            error
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-primary hover:bg-primaryHover"
+          }`}
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 }

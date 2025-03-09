@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, X } from "lucide-react";
-import pricingData from "@/constants/price";
+import { pricingData } from "@/constants/price";
 import { format } from "date-fns";
 
 const calculatePrice = (formData) => {
@@ -12,7 +12,14 @@ const calculatePrice = (formData) => {
     const foundPrice = pricingData.find(
       (item) => item.bedrooms == bedrooms && item.bathrooms == bathrooms
     );
-    return foundPrice ? foundPrice[serviceType] : 0;
+    if (foundPrice) {
+      formData.square_feet = foundPrice.square_feet;
+      return {
+        price: Number(foundPrice[serviceType]) || 0,
+        square_feet: foundPrice.square_feet,
+      };
+    }
+    return { price: 0, square_feet: "N/A" };
   }
 
   const initialBasePrice = (() => {
@@ -30,11 +37,11 @@ const calculatePrice = (formData) => {
     }
   })();
 
-  const dynamicBasePrice =
+  const { price } =
     getBasePrice(formData.serviceType, formData.bedrooms, formData.bathrooms) ||
     0;
 
-  basePrice = Math.max(initialBasePrice, dynamicBasePrice);
+  basePrice = Math.max(initialBasePrice, price);
 
   switch (formData.propertyCondition) {
     case "Well maintained":
@@ -84,19 +91,32 @@ export default function StepIndicator({
 
   return (
     <div className="sticky top-0 left-0 w-full bg-white z-50">
-      <Button
-        type="button"
-        onClick={prevStep}
-        className="mb-1 flex items-center gap-2 md:mx-32 mx-4"
-      >
-        <ArrowLeft
-          className="text-[#2196F3]"
-          style={{ width: "30px", height: "25px" }}
-        />
-      </Button>
+      <div className="flex items-center sm:justify-between w-full">
+        <Button
+          type="button"
+          onClick={prevStep}
+          className="mb-1 flex items-center gap-2 md:mx-32 mx-4 bg-transparent hover:bg-transparent"
+        >
+          <ArrowLeft
+            className="text-primary"
+            style={{ width: "30px", height: "25px" }}
+          />
+        </Button>
+        <div>
+          <img
+            src="/logo/LogoUp2.png"
+            alt=""
+            className="sm:w-[300px] w-[200px]"
+          />
+        </div>
+        <div />
+        <div />
+        <div />
+      </div>
+
       <div className="w-full h-[6px] bg-gray-200 overflow-hidden">
         <motion.div
-          className="h-full bg-[#2196F3]"
+          className="h-full bg-primary"
           initial={{ width: "0%" }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.3 }}
@@ -107,9 +127,9 @@ export default function StepIndicator({
         className="px-4 py-2 border-b-2 lg:hidden flex-col cursor-pointer"
         onClick={() => setSheetOpen(true)}
       >
-        <p className="text-sm text-gray-600">Service Request</p>
+        <p className="text-lg text-gray-600">Service Request</p>
         <div className="flex justify-between">
-          <p className="text-sm text-gray-600 font-semibold mt-1">
+          <p className="text-xl text-gray-600 font-semibold mt-1">
             {formData.serviceType === "regular"
               ? "Regular Cleaning"
               : formData.serviceType === "deep"
@@ -118,7 +138,7 @@ export default function StepIndicator({
               ? "Move In/Out Cleaning"
               : "Airbnb Cleaning"}
           </p>
-          <p className="text-md text-blue-500 font-semibold">${total}</p>
+          <p className="text-2xl text-primary font-semibold">${total}</p>
         </div>
       </div>
 
@@ -127,41 +147,46 @@ export default function StepIndicator({
         <div className="fixed inset-0 flex items-end bg-black bg-opacity-50 z-50">
           <div className="w-full bg-white rounded-t-2xl max-h-[92vh] overflow-y-auto">
             <div className="flex justify-between items-center p-5">
-              <h3 className="text-lg font-semibold">Summary</h3>
+              <h3 className="text-xl font-semibold">Summary</h3>
               <button onClick={() => setSheetOpen(false)}>
                 <X className="w-6 h-6 text-gray-600" />
               </button>
             </div>
             <div className="space-y-2">
               <div className="pt-2 border-t px-4 pb-6 bg-gray-50 ">
-                <h3 className="font-bold">Service Request</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-bold text-xl">Service Request</h3>
+                <p className="text-lg text-gray-600">
                   This is a service request. We’ll review your selected times
                   and confirm availability as soon as possible.
                 </p>
               </div>
               <p className="text-lg text-gray-700 font-bold px-4">
                 {formData.serviceType.charAt(0).toUpperCase() +
-                  formData.serviceType.slice(1)}
+                  formData.serviceType.slice(1)}{" "}
                 Cleaning
               </p>
               <div className="space-y-1 ">
                 {formData.bedrooms > 0 && (
-                  <div className="flex justify-between text-md px-6 text-gray-600">
+                  <div className="flex justify-between text-lg px-6 text-gray-600">
                     <span>{`${formData.bedrooms} ${
                       formData.bedrooms === 1 ? "bedroom" : "bedrooms"
                     }`}</span>
                   </div>
                 )}
                 {formData.bathrooms > 0 && (
-                  <div className="flex justify-between text-md text-gray-600 px-6">
+                  <div className="flex justify-between text-lg text-gray-600 px-6">
                     <span>{`${formData.bathrooms} ${
                       formData.bathrooms === 1 ? "bathroom" : "bathrooms"
                     }`}</span>{" "}
                   </div>
                 )}
-                {formData.extras?.length > 0 && (
+                {formData.square_feet != null && (
                   <div className="flex justify-between text-md text-gray-600 px-6">
+                    <span>{`${formData.square_feet} Sq. Feet`}</span>{" "}
+                  </div>
+                )}
+                {formData.extras?.length > 0 && (
+                  <div className="flex justify-between text-lg text-gray-600 px-6">
                     <span>
                       {formData.extras.map((extra, index) => (
                         <div key={index}>{extra}</div>
@@ -171,19 +196,19 @@ export default function StepIndicator({
                 )}
 
                 {formData.propertyCondition && (
-                  <div className="flex justify-between text-md text-gray-600 px-6">
+                  <div className="flex justify-between text-lg text-gray-600 px-6">
                     <span>{formData.propertyCondition}</span>
                   </div>
                 )}
                 {formData.hasPets && (
-                  <div className="flex justify-between text-md text-gray-600 px-6">
+                  <div className="flex justify-between text-lg text-gray-600 px-6">
                     <span>{formData.hasPets}</span>
                   </div>
                 )}
                 {formData.preferredDate &&
                   formData.preferredTime.length > 0 && (
                     <>
-                      <div className="pt-4 px-6 text-xs text-gray-700 flex items-center">
+                      <div className="pt-4 px-6 text-md text-gray-700 flex items-center">
                         <span className="pr-1">REQUESTED TIME</span>
                         <div className="flex-grow border-t border-gray-200"></div>
                       </div>
@@ -206,7 +231,7 @@ export default function StepIndicator({
                     </>
                   )}
                 {formData.streetAddress && (
-                  <div className="pt-8 pb-2 border-t text-md text-gray-600 px-6">
+                  <div className="pt-8 pb-2 border-t text-lg text-gray-600 px-6">
                     <div className="flex justify-between">
                       {/* <IoLocationOutline /> */}
                       <span className="text-right">
@@ -216,7 +241,7 @@ export default function StepIndicator({
                   </div>
                 )}
                 {formData.unitNumber && (
-                  <div className="text-md text-gray-600 px-6 pb-4">
+                  <div className="text-lg text-gray-600 px-6 pb-4">
                     <div className="flex justify-between">
                       <span className="text-right">{formData.unitNumber}</span>
                     </div>
@@ -224,12 +249,12 @@ export default function StepIndicator({
                 )}
                 <div className="pt-4 border-t px-6 pb-8">
                   <motion.div
-                    className="flex justify-between text-md font-semibold"
+                    className="flex justify-between text-lg font-semibold"
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 0.3 }}
                   >
                     <span>Today's Total</span>
-                    <span className="text-[#2196F3] font-bold text-lg">
+                    <span className="text-primary font-bold text-2xl">
                       ${total}
                     </span>
                   </motion.div>

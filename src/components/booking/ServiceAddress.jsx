@@ -1,7 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
-export default function ServiceAddress({ form }) {
+export default function ServiceAddress({ form, nextStep }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -112,6 +113,15 @@ export default function ServiceAddress({ form }) {
             className="w-full py-[28px] rounded-xl transition-colors"
           />
         </div>
+      </div>
+      <div className="mt-8 flex justify-start">
+        <Button
+          type="button"
+          onClick={nextStep}
+          className="px-16 py-6 text-white bg-primary hover:bg-primaryHover"
+        >
+          Continue
+        </Button>
       </div>
     </div>
   );

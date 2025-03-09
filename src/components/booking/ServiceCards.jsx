@@ -38,14 +38,14 @@ export default function ServiceCards({ onServiceSelect }) {
               whileTap={{ scale: 0.98 }}
               onClick={() => onServiceSelect(service.id)}
             >
-              <Card className="cursor-pointer hover:border-[#2196F3] hover:text-[#2196F3] transition-colors">
+              <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors">
                 <CardContent className="p-6 flex flex-col items-center text-center">
                   <img
                     src={service.image}
                     alt={service.title}
                     className="w-full h-32 object-cover rounded-md mb-4"
                   />
-                  <h3 className="text-md font-medium mb-2">{service.title}</h3>
+                  <h3 className="text-md font-bold mb-2">{service.title}</h3>
                 </CardContent>
               </Card>
             </motion.div>

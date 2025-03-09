@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import StepIndicator from "@/components/booking/StepIndicator";
 import ServiceCards from "@/components/booking/ServiceCards";
@@ -12,8 +11,7 @@ import ServiceAddress from "@/components/booking/ServiceAddress";
 // import RecurringPlan from "@/components/booking/RecurringPlan";
 import ContactInfo from "@/components/booking/ContactInfo";
 import Detail from "@/components/booking/Detail";
-
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 export default function Booking() {
   const [showBookingSteps, setShowBookingSteps] = useState(false);
@@ -24,8 +22,9 @@ export default function Booking() {
       serviceType: "",
       bedrooms: null,
       bathrooms: null,
+      square_feet: null,
       extras: [],
-      propertyCondition: "",
+      propertyCondition: null,
       hasPets: false,
       accessMethod: "",
       specialNotes: "",
@@ -46,14 +45,12 @@ export default function Booking() {
     form.setValue("serviceType", serviceType);
     setShowBookingSteps(true);
   };
-
   const validateCurrentStep = () => {
     switch (currentStep) {
       case 0:
         return (
           form.getValues("bedrooms") &&
           form.getValues("bathrooms") &&
-          form.getValues("extras") &&
           form.getValues("propertyCondition")
         );
       case 1:
@@ -74,11 +71,34 @@ export default function Booking() {
   const nextStep = async () => {
     if (!validateCurrentStep()) {
       form.trigger();
+      const result = await form.trigger();
+      if (result) {
+        if (form.getValues("bedrooms") == null) {
+          form.setError("bedrooms", {
+            type: "required",
+            message: "Please select number of bedrooms",
+          });
+        }
+        if (form.getValues("bathrooms") == null) {
+          form.setError("bathrooms", {
+            type: "required",
+            message: "Please select number of bathrooms",
+          });
+        }
+
+        if (form.getValues("propertyCondition") == null) {
+          form.setError("propertyCondition", {
+            type: "required",
+            message: "Please select property condition",
+          });
+        }
+      }
       return;
     }
 
     if (currentStep < TOTAL_STEPS - 1) {
       setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       form.handleSubmit(onSubmit)();
     }
@@ -134,29 +154,27 @@ export default function Booking() {
                       )}
                       {showBookingSteps && (
                         <>
-                          {currentStep === 0 && <PropertyDetails form={form} />}
-                          {currentStep === 1 && <PreferredTimes form={form} />}
-                          {currentStep === 2 && <ServiceAddress form={form} />}
+                          {currentStep === 0 && (
+                            <PropertyDetails form={form} nextStep={nextStep} />
+                          )}
+                          {currentStep === 1 && (
+                            <PreferredTimes form={form} nextStep={nextStep} />
+                          )}
+                          {currentStep === 2 && (
+                            <ServiceAddress form={form} nextStep={nextStep} />
+                          )}
                           {/* {currentStep === 3 && <RecurringPlan form={form} />} */}
-                          {currentStep === 3 && <ContactInfo form={form} />}
+                          {currentStep === 3 && (
+                            <ContactInfo
+                              form={form}
+                              setCurrentStep={setCurrentStep}
+                              currentStep={currentStep}
+                            />
+                          )}
                         </>
                       )}
                     </motion.div>
                   </AnimatePresence>
-
-                  {showBookingSteps && currentStep !== 3 && (
-                    <div className="mt-8 flex justify-start">
-                      <Button
-                        type="button"
-                        onClick={nextStep}
-                        className="bg-[#2196F3] text-white px-16 py-6 hover:bg-[#0d6e9c]"
-                      >
-                        {currentStep === TOTAL_STEPS - 1
-                          ? "Book Appointment"
-                          : "Continue"}
-                      </Button>
-                    </div>
-                  )}
                 </form>
               </Form>
             </div>
@@ -169,7 +187,7 @@ export default function Booking() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-50 mt-20">
+      <div className="bg-gray-50 mt-12">
         <Detail />
       </div>
     </>

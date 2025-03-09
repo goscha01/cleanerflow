@@ -1,87 +1,17 @@
 import { useRef, useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { extras, conditions, pets, requirements } from "@/constants/price";
+import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const bedrooms = Array.from({ length: 6 }, (_, i) => i + 1);
 const bathrooms = Array.from({ length: 5 }, (_, i) => i + 1);
 
-const extras = [
-  {
-    id: "cabinet",
-    label: "Inside Cabinet",
-    price: 30,
-    image: "/extras/cabinets.png",
-    description: "Kitchen cabinets",
-  },
-  {
-    id: "fridge",
-    label: "Inside Fridge",
-    price: 40,
-    image: "/extras/fridge.png",
-    description: "Removing all the shelves",
-  },
-  {
-    id: "oven",
-    label: "Inside Oven",
-    price: 40,
-    image: "/extras/oven.png",
-    description: "Oven",
-  },
-  {
-    id: "laundry",
-    label: "Laundry Wash & Dry",
-    price: 20,
-    image: "/extras/laundry.png",
-    description: "1 load included",
-  },
-  {
-    id: "window",
-    label: "Interior Windows Inside",
-    price: 20,
-    image: "/extras/windows.png",
-    description: "4 windows included, Price for every additional",
-  },
-  {
-    id: "dish",
-    label: "Dish",
-    price: 20,
-  },
-  {
-    id: "door",
-    label: "Patio Door",
-    price: 50,
-    description: "inside and outside",
-  },
-  {
-    id: "garage",
-    label: "Garage",
-    price: 50,
-  },
-];
-
-const conditions = [
-  { id: "Well maintained", label: "Well maintained", description: "7-9" },
-  { id: "Fair", label: "Fair", description: "4-6" },
-  { id: "Need attention", label: "Need attention", description: "1-3" },
-];
-
-const pets = [
-  { id: "Yes", label: "Yes" },
-  { id: "No", label: "No" },
-];
-
-const requirements = [
-  { id: "home", label: "Someone is Home" },
-  { id: "code", label: "Access Code" },
-  { id: "key", label: "Hidden Key" },
-  { id: "other", label: "Other" },
-];
-
-export default function PropertyDetails({ form }) {
+export default function PropertyDetails({ form, nextStep }) {
   const bedroomsRef = useRef(null);
   const bathroomsRef = useRef(null);
   const extrasRef = useRef(null);
@@ -96,7 +26,45 @@ export default function PropertyDetails({ form }) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
+  // Validation error scroll handling
+  useEffect(() => {
+    const errors = form.formState.errors;
+    if (
+      (errors.bedrooms && errors.bathrooms && errors.propertyCondition) ||
+      (errors.bedrooms && errors.bathrooms) ||
+      errors.bedrooms
+    ) {
+      scrollToSection(bedroomsRef);
+    } else if (
+      errors.bathrooms ||
+      (errors.bathrooms && errors.propertyCondition)
+    ) {
+      scrollToSection(bathroomsRef);
+    } else if (errors.propertyCondition) {
+      scrollToSection(conditionRef);
+    }
+  }, [
+    form.formState.errors.bedrooms,
+    form.formState.errors.bathrooms,
+    form.formState.errors.propertyCondition,
+  ]);
 
+  const handleBedroomSelect = (num) => {
+    form.setValue("bedrooms", num);
+    form.clearErrors("bedrooms");
+  };
+
+  const handleBathroomSelect = (num) => {
+    form.setValue("bathrooms", num);
+    form.clearErrors("bathrooms");
+  };
+
+  const handleConditionSelect = (conditionId) => {
+    form.setValue("propertyCondition", conditionId);
+    form.clearErrors("propertyCondition");
+  };
+
+  // Auto-scroll on selection
   useEffect(() => {
     if (form.watch("bedrooms")) {
       scrollToSection(bathroomsRef);
@@ -131,7 +99,7 @@ export default function PropertyDetails({ form }) {
     <div className="space-y-8">
       <section ref={bedroomsRef}>
         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Number of Bedrooms
+          Number of Bedrooms <span className="text-red-500">*</span>
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
           {bedrooms.map((num) => (
@@ -139,13 +107,15 @@ export default function PropertyDetails({ form }) {
               key={num}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => form.setValue("bedrooms", num)}
+              onClick={() => handleBedroomSelect(num)}
             >
               <Card
                 className={`cursor-pointer transition-colors ${
                   form.watch("bedrooms") === num
-                    ? "border-[#2196F3] border-2 text-[#2196F3] bg-blue-50 font-bold"
-                    : ""
+                    ? "border-primary border-2 text-primary bg-primaryDull font-bold"
+                    : // : form.formState.errors.bedrooms
+                      // ? "border-red-500"
+                      ""
                 }`}
               >
                 <CardContent className="p-6 text-center">
@@ -157,14 +127,21 @@ export default function PropertyDetails({ form }) {
             </motion.div>
           ))}
         </div>
+        {form.formState.errors.bedrooms && (
+          <div className="flex items-center gap-2 mt-2 text-red-500">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">Please select number of bedrooms</span>
+          </div>
+        )}
       </section>
+
       <section ref={bathroomsRef}>
         <h2 className="text-xl font-semibold text-gray-900 mb-2 mt-16">
-          Number of Bathrooms
+          Number of Bathrooms <span className="text-red-500">*</span>
         </h2>
         <p className="text-[16px] text-gray-600 mb-6 text-justify">
-          For our service, a "bathroom " can be a full-sized bathroom (with a
-          tub and/or shower) or a half-bathroom (with just a toilet and basin).
+          For our service, a "bathroom" can be a full-sized bathroom (with a tub
+          and/or shower) or a half-bathroom (with just a toilet and basin).
           Therefore, if you have 1 full-sized bathroom and 1 half-bathroom, it
           will be considered as 2 bathrooms in total.
         </p>
@@ -174,13 +151,15 @@ export default function PropertyDetails({ form }) {
               key={num}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => form.setValue("bathrooms", num)}
+              onClick={() => handleBathroomSelect(num)}
             >
               <Card
                 className={`cursor-pointer transition-colors ${
                   form.watch("bathrooms") === num
-                    ? "border-[#2196F3] border-2 text-[#2196F3] bg-blue-50 font-bold"
-                    : ""
+                    ? "border-primary border-2 text-primary bg-primaryDulls font-bold"
+                    : // : form.formState.errors.bathrooms
+                      // ? "border-red-500"
+                      ""
                 }`}
               >
                 <CardContent className="p-6 text-center">
@@ -192,7 +171,14 @@ export default function PropertyDetails({ form }) {
             </motion.div>
           ))}
         </div>
+        {form.formState.errors.bathrooms && (
+          <div className="flex items-center gap-2 mt-2 text-red-500">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">Please select number of bathrooms</span>
+          </div>
+        )}
       </section>
+
       <section ref={extrasRef}>
         <h2 className="text-xl font-semibold text-gray-900 mb-2 mt-16">
           Extras
@@ -208,7 +194,7 @@ export default function PropertyDetails({ form }) {
               <Card
                 key={extra.id}
                 className={`cursor-pointer border border-gray-300 transition-all flex items-center p-4 rounded-lg shadow-sm ${
-                  isChecked ? "border-[#2196F3] border-2 bg-blue-50" : ""
+                  isChecked ? "border-primary border-2 bg-primaryDull" : ""
                 }`}
               >
                 <CardContent className="flex flex-1 items-center space-x-4">
@@ -230,7 +216,7 @@ export default function PropertyDetails({ form }) {
                       htmlFor={extra.id}
                       className={`w-6 h-6 flex items-center justify-center border-2 rounded-md transition cursor-pointer ${
                         isChecked
-                          ? "border-[#2196F3] bg-[#2196F3] text-white font-bold"
+                          ? "border-primary bg-primary text-white font-bold"
                           : "border-gray-300 bg-white"
                       }`}
                     >
@@ -243,7 +229,7 @@ export default function PropertyDetails({ form }) {
                       <div>
                         <span
                           className={`text-lg ${
-                            isChecked ? "text-[#2196F3] font-bold" : ""
+                            isChecked ? "text-primary font-bold" : ""
                           }`}
                         >
                           {extra.label}
@@ -256,7 +242,6 @@ export default function PropertyDetails({ form }) {
                   </Label>
                 </CardContent>
 
-                {/* Display Image if available */}
                 {index < 5 && extra.image && (
                   <div className="flex flex-col items-center">
                     <img
@@ -274,11 +259,11 @@ export default function PropertyDetails({ form }) {
 
       <section ref={conditionRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-2">
-          Property Condition
+          Property Condition <span className="text-red-500">*</span>
         </h2>
         <p className="text-[16px] text-gray-600 mb-6">
-          How would you rate your property condition int the rate from 1 dirty
-          to 10 clean?
+          How would you rate your property condition in the rate from 1 dirty to
+          10 clean?
         </p>
         <div className="grid grid-cols-1 md:grid-cols-1 gap-2">
           {conditions.map((condition) => (
@@ -286,13 +271,15 @@ export default function PropertyDetails({ form }) {
               key={condition.id}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => form.setValue("propertyCondition", condition.id)}
+              onClick={() => handleConditionSelect(condition.id)}
             >
               <Card
                 className={`cursor-pointer transition-colors ${
                   form.watch("propertyCondition") === condition.id
-                    ? "border-[#2196F3] border-2 text-[#2196F3] font-bold bg-blue-50"
-                    : ""
+                    ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
+                    : // : form.formState.errors.propertyCondition
+                      // ? "border-red-500"
+                      ""
                 }`}
               >
                 <CardContent className="p-6 text-center">
@@ -305,7 +292,14 @@ export default function PropertyDetails({ form }) {
             </motion.div>
           ))}
         </div>
+        {form.formState.errors.propertyCondition && (
+          <div className="flex items-center gap-2 mt-2 text-red-500">
+            <AlertCircle className="h-4 w-4" />
+            <span className="text-sm">Please select property condition</span>
+          </div>
+        )}
       </section>
+
       <section ref={petRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-6">
           Any pets
@@ -321,7 +315,7 @@ export default function PropertyDetails({ form }) {
               <Card
                 className={`cursor-pointer transition-colors ${
                   form.watch("hasPets") === pet.id
-                    ? "border-[#2196F3] border-2 text-[#2196F3] font-bold bg-blue-50"
+                    ? "border-primary border-2 text-primary font-bold bg-primaryDull"
                     : ""
                 }`}
               >
@@ -344,7 +338,7 @@ export default function PropertyDetails({ form }) {
               key={req.id}
               className={`cursor-pointer transition-colors ${
                 selectedRequirement === req.id
-                  ? "border-[#2196F3] border-2 text-[#2196F3] font-bold bg-blue-50"
+                  ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
                   : ""
               }`}
               onClick={() => {
@@ -376,8 +370,7 @@ export default function PropertyDetails({ form }) {
         </div>
       </section>
 
-      {/* <section ref={noteRef}> */}
-      <section>
+      <section ref={noteRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-2">
           Special Notes or Instructions
         </h2>
@@ -399,6 +392,15 @@ export default function PropertyDetails({ form }) {
           {...form.register("specialNotes")}
         />
       </section>
+      <div className="mt-8 flex justify-start">
+        <Button
+          type="button"
+          onClick={nextStep}
+          className="bg-primary text-white px-16 py-6 hover:bg-primaryHover"
+        >
+          Continue
+        </Button>
+      </div>
     </div>
   );
 }

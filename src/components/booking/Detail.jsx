@@ -112,7 +112,7 @@ const Detail = () => {
         {steps.map((step) => (
           <div key={step.number} className="flex flex-col">
             <div className="flex items-center space-x-4 ">
-              <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white rounded-full font-bold mt-4">
+              <span className="flex items-center justify-center w-8 h-8 bg-primary text-white rounded-full font-bold mt-4">
                 {step.number}
               </span>
               <h3 className="text-md font-semibold text-gray-700">
@@ -132,8 +132,8 @@ const Detail = () => {
         {features.map((feature, index) => (
           <div key={index} className="flex space-x-4">
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
-                <AiOutlineCheck className="w-5 h-5 text-blue-500" />
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <AiOutlineCheck className="w-5 h-5 text-white" />
               </div>
             </div>
             <div>

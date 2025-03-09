@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import SuccessModal from "@/components/ui/successModal";
 import emailjs from "emailjs-com";
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react"; // Spinner Icon
+import { useNavigate } from "react-router-dom";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
@@ -10,23 +12,23 @@ const USER_ID = import.meta.env.VITE_USER_ID;
 const ADMIN_TEMPLATE_ID = import.meta.env.VITE_ADMIN_TEMPLATE_ID;
 const USER_TEMPLATE_ID = import.meta.env.VITE_USER_TEMPLATE_ID;
 
-export default function ContactInfo({ form }) {
+export default function ContactInfo({ form, currentStep, setCurrentStep }) {
+  const navigate = useNavigate();
   const formData = form.watch();
   const [sendNotifications, setSendNotifications] = useState(true);
-  const [showSuccess, setShowSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState(true);
 
-  const validateForm = () => {
-    let newErrors = {};
-    if (!formData.name) newErrors.name = "Full Name is required";
-    if (!formData.phone) newErrors.phone = "Phone Number is required";
-    if (!formData.email) newErrors.email = "Email Address is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  useEffect(() => {
+    const validateForm = () => {
+      const isValid = formData.name && formData.phone && formData.email;
+      setErrors(!isValid);
+    };
+
+    validateForm();
+  }, [formData.name, formData.phone, formData.email]);
+
   const handleSubmit = async () => {
-    if (!validateForm()) return;
     setLoading(true);
     try {
       const emailData = {
@@ -47,7 +49,6 @@ export default function ContactInfo({ form }) {
         totalPrice: formData.totalPrice,
       };
 
-      // Send email to admin
       await emailjs.send(
         SERVICE_ID,
         ADMIN_TEMPLATE_ID,
@@ -55,7 +56,6 @@ export default function ContactInfo({ form }) {
         USER_ID
       );
 
-      // Send email to user if they opt-in
       if (sendNotifications) {
         await emailjs.send(
           SERVICE_ID,
@@ -68,12 +68,9 @@ export default function ContactInfo({ form }) {
           USER_ID
         );
       }
-
-      // Show success modal after submission
-      setShowSuccess(true);
-
-      // Reset form fields
+      setCurrentStep(currentStep + 1);
       form.reset();
+      navigate("/home");
     } catch (error) {
       console.error("Failed to send email:", error);
     } finally {
@@ -98,9 +95,6 @@ export default function ContactInfo({ form }) {
             {...form.register("name")}
             className="w-full py-[24px] rounded-xl transition-colors"
           />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-          )}
         </div>
       </div>
       <div className="flex gap-4 mt-4">
@@ -111,9 +105,6 @@ export default function ContactInfo({ form }) {
             {...form.register("phone")}
             className="w-full py-[24px] rounded-xl transition-colors"
           />
-          {errors.phone && (
-            <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-          )}
         </div>
         <div className="w-[49%]">
           <Input
@@ -122,9 +113,6 @@ export default function ContactInfo({ form }) {
             {...form.register("email")}
             className="w-full py-[24px] rounded-xl transition-colors"
           />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-          )}
         </div>
       </div>
       <div className="flex items-center gap-2 mt-4">
@@ -137,20 +125,27 @@ export default function ContactInfo({ form }) {
           Send me notifications about this service request via text message
         </label>
       </div>
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className={`mt-8 w-full px-16 py-4 rounded-lg text-white transition ${
-          loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#2196F3] hover:bg-[#0d6e9c]"
-        }`}
-      >
-        {loading ? "Loading..." : "Book Appointment"}
-      </button>
-
-      {/* Success Modal */}
-      {showSuccess && <SuccessModal setShowSuccess={setShowSuccess} />}
+      <div className="mt-8 flex justify-start">
+        <Button
+          onClick={handleSubmit}
+          type="button"
+          disabled={errors || loading}
+          className={`px-16 py-6 w-full text-white text-lg ${
+            errors || loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-primary hover:bg-primaryHover"
+          }`}
+        >
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin w-5 h-5 mr-2" />
+              Processing...
+            </>
+          ) : (
+            "Request Appointment"
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
