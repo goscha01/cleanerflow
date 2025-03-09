@@ -67,7 +67,18 @@ const calculatePrice = (formData) => {
   }
 
   if (formData.hasPets) basePrice += 20;
+
+  let discount = 0;
+  if (formData.recurringPlan > 0) {
+    discount = 0.15;
+  }
+
+  const discountAmount = basePrice * discount;
+  basePrice -= discountAmount;
+
   return {
+    subtotal: Math.round(basePrice + discountAmount),
+    discount: Math.round(discountAmount),
     total: Math.round(basePrice),
   };
 };
@@ -87,7 +98,8 @@ export default function StepIndicator({
     form.setValue("totalPrice", total);
   }, []);
 
-  const { total } = calculatePrice(formData);
+  const { subtotal, discount, total } = calculatePrice(formData);
+  // const { total } = calculatePrice(formData);
 
   return (
     <div className="sticky top-0 left-0 w-full bg-white z-50">
@@ -244,6 +256,18 @@ export default function StepIndicator({
                   <div className="text-lg text-gray-600 px-6 pb-4">
                     <div className="flex justify-between">
                       <span className="text-right">{formData.unitNumber}</span>
+                    </div>
+                  </div>
+                )}
+                {discount > 0 && (
+                  <div className="pt-4 border-t px-6 pb-2">
+                    <div className="flex justify-between text-md font-semibold">
+                      <span>Subtotal</span>
+                      <span>${subtotal}</span>
+                    </div>
+                    <div className="flex justify-between text-green-600">
+                      <span>Recurring Plan Discount (15%)</span>
+                      <span>-${discount}</span>
                     </div>
                   </div>
                 )}
