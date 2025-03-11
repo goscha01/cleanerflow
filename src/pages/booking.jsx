@@ -113,7 +113,7 @@ export default function Booking() {
 
   if (!showBookingSteps) {
     return (
-      <div className="min-h-screen p-4 md:p-8">
+      <div className="p-4 md:p-8">
         <div className="max-w-7xl mx-auto">
           <ServiceCards onServiceSelect={handleServiceSelect} />
         </div>
@@ -131,7 +131,7 @@ export default function Booking() {
           form={form}
         />
       )}
-      <div className="min-h-screen p-2">
+      <div className="p-2">
         <div className="max-w-7xl mx-auto">
           <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 md:mx-32 mx-4">
             <div className="lg:col-span-2">

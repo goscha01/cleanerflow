@@ -26,11 +26,21 @@ const services = [
 
 export default function ServiceCards({ onServiceSelect }) {
   return (
-    <div className="flex items-center justify-center md:mt-24 mt-8">
+    <div className="flex items-center justify-center md:mt-24 mt-20">
       <div className="text-center">
+        <div className="top-0 fixed p-4 left-1/2 -translate-x-1/2 w-full border-b border-gray-200 bg-white z-10">
+          <div className="flex justify-center">
+            <img
+              src="/logo/LogoUp2.png"
+              alt=""
+              className="sm:w-[300px] w-[200px]"
+            />
+          </div>
+        </div>
+
         <h2 className="text-3xl font-semibold text-gray-900">Select Service</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8 md:mx-24">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8 md:mx-24">
           {services.map((service) => (
             <motion.div
               key={service.id}

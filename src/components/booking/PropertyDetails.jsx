@@ -22,7 +22,7 @@ export default function PropertyDetails({ form, nextStep }) {
   const [selectedRequirement, setSelectedRequirement] = useState(null);
 
   const scrollToSection = (ref) => {
-    const offset = 100;
+    const offset = 130;
     if (ref.current) {
       const top =
         ref.current.getBoundingClientRect().top + window.scrollY - offset;
