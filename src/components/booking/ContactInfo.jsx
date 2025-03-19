@@ -48,8 +48,6 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
         hasPets: formData.hasPets,
         accessMethod: formData.accessMethod.code,
         specialNotes: formData.specialNotes,
-        preferredDate: formData.preferredDate,
-        preferredTime: formData.preferredTime.join(", "),
         totalPrice: formData.totalPrice,
       };
 
@@ -65,8 +63,6 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
           SERVICE_ID,
           USER_TEMPLATE_ID,
           {
-            preferredDate: formData.preferredDate,
-            preferredTime: formData.preferredTime.join(", "),
             user_email: formData.email,
           },
           USER_ID

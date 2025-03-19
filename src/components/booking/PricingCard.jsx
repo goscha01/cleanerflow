@@ -19,7 +19,6 @@ const calculatePrice = (formData) => {
     }
     return { price: 0, square_feet: "N/A" };
   }
-
   const initialBasePrice = (() => {
     switch (formData.serviceType) {
       case "regular":
@@ -84,7 +83,6 @@ const calculatePrice = (formData) => {
 
 export default function PricingCard({ form }) {
   const formData = form.watch();
-
   useEffect(() => {
     const { total } = calculatePrice(formData);
     form.setValue("totalPrice", total);
@@ -144,28 +142,33 @@ export default function PricingCard({ form }) {
               <span>{formData.hasPets}</span>
             </div>
           )}
-          {formData.preferredDate && formData.preferredTime.length > 0 && (
+          {formData.preferredDates && formData.preferredDates.length > 0 && (
             <>
               <div className="pt-4 px-6 text-xs text-gray-700 flex items-center">
                 <span className="pr-1">REQUESTED TIME</span>
                 <div className="flex-grow border-t border-gray-200"></div>
               </div>
 
-              <div className="text-sm text-gray-600 px-6 pb-2">
-                <div className="flex justify-between font-semibold">
-                  <span>{format(formData.preferredDate, "PPP")}</span>
-                </div>
-                <div className="flex flex-wrap gap-1 mt-2">
-                  {formData.preferredTime.map((time, index) => (
-                    <span
-                      key={index}
-                      className="border-[1px] border-gray-200 rounded-md px-2 py-1 text-gray-500"
-                    >
-                      {time}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              {formData.preferredDates.map((date) => {
+                const times = formData.preferredTimes[date] || [];
+                return (
+                  <div key={date} className="text-sm text-gray-600 px-6 pb-2">
+                    <div className="flex justify-between font-semibold">
+                      <span>{format(new Date(date), "PPP")}</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {times.map((time, index) => (
+                        <span
+                          key={index}
+                          className="border-[1px] border-gray-200 rounded-md px-2 py-1 text-gray-500"
+                        >
+                          {time}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </>
           )}
           {formData.streetAddress && (

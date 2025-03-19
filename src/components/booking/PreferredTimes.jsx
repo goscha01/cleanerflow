@@ -20,9 +20,12 @@ const timeSlots = [
 ];
 
 export default function PreferredTimes({ form, nextStep }) {
-  const selectedDate = form.watch("preferredDate");
-  const selectedTimes = form.watch("preferredTime") || [];
-
+  const selectedDates = form.watch("preferredDates") || [];
+  const selectedTimes = form.watch("preferredTimes") || {};
+  useEffect(() => {
+    form.setValue("preferredDates", []);
+    form.setValue("preferredTimes", []);
+  }, []);
   // Validation state
   const [error, setError] = useState("");
 
@@ -32,19 +35,43 @@ export default function PreferredTimes({ form, nextStep }) {
 
   // Reset time when date changes
   useEffect(() => {
-    form.setValue("preferredTime", []);
-  }, [selectedDate]);
+    form.setValue("preferredTimes", []);
+  }, []);
 
   // Validation logic (runs whenever date or time changes)
   useEffect(() => {
-    if (!selectedDate) {
+    if (!selectedDates) {
       setError("Please select a date.");
     } else if (selectedTimes.length === 0) {
       setError("Please select at least one time slot.");
     } else {
       setError(""); // Clear error if valid
     }
-  }, [selectedDate, selectedTimes]);
+  }, [selectedDates, selectedTimes]);
+
+  const handleDateSelect = (dates) => {
+    if (!Array.isArray(dates)) {
+      console.error("Expected an array of dates, but got:", dates);
+      return;
+    }
+
+    const newDates = dates.map((date) => format(date, "yyyy-MM-dd")); // Format each date
+    form.setValue("preferredDates", newDates);
+  };
+
+  const handleTimeSelect = (dateKey, time) => {
+    const newTimes = { ...selectedTimes };
+    if (newTimes[dateKey]) {
+      if (newTimes[dateKey].includes(time)) {
+        newTimes[dateKey] = newTimes[dateKey].filter((t) => t !== time);
+      } else {
+        newTimes[dateKey] = [...newTimes[dateKey], time];
+      }
+    } else {
+      newTimes[dateKey] = [time];
+    }
+    form.setValue("preferredTimes", newTimes);
+  };
 
   return (
     <div className="md:px-6 px-0">
@@ -58,14 +85,14 @@ export default function PreferredTimes({ form, nextStep }) {
         <CardContent className="p-8 space-y-8">
           <div className="text-center">
             <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={(date) => form.setValue("preferredDate", date)}
+              mode="multiple"
+              selected={selectedDates?.map((dateKey) => new Date(dateKey))}
+              onSelect={(date) => handleDateSelect(date)}
               disabled={disabledDays}
             />
           </div>
 
-          {selectedDate && (
+          {selectedDates.length > 0 && (
             <div className="space-y-6">
               <p className="text-[16px] text-gray-600 mb-6 text-center">
                 Please select at least <span className="font-bold">1 date</span>{" "}
@@ -74,41 +101,45 @@ export default function PreferredTimes({ form, nextStep }) {
                 availability.
               </p>
 
-              <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-4">
-                <p className="text-[16px] text-gray-600 mb-6 text-center">
-                  Select preferred times for{" "}
-                  <span className="font-bold">
-                    {format(selectedDate, "EEE, MMM do", { locale: enUS })}
-                  </span>
-                </p>
+              {selectedDates.map((dateKey) => (
+                <div
+                  key={dateKey}
+                  className="rounded-lg border bg-card text-card-foreground shadow-sm p-4"
+                >
+                  <p className="text-[16px] text-gray-600 mb-6 text-center">
+                    Select preferred times for{" "}
+                    <span className="font-bold">
+                      {format(new Date(dateKey), "EEE, MMM do", {
+                        locale: enUS,
+                      })}
+                    </span>
+                  </p>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4">
-                  {timeSlots.map((time) => (
-                    <label
-                      key={time}
-                      className="flex items-center space-x-3 border-[1px] border-gray-200 hover:bg-gray-100 transition-all p-3 rounded-md cursor-pointer"
-                    >
-                      <Checkbox
-                        id={`time-${time}`}
-                        checked={selectedTimes.includes(time)}
-                        onCheckedChange={(checked) => {
-                          const newTimes = checked
-                            ? [...selectedTimes, time]
-                            : selectedTimes.filter((t) => t !== time);
-                          form.setValue("preferredTime", newTimes);
-                        }}
-                        className="w-5 h-5 transition-all duration-200"
-                      />
-                      <Label
-                        htmlFor={`time-${time}`}
-                        className="text-xs font-medium text-gray-500"
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4">
+                    {timeSlots.map((time) => (
+                      <label
+                        key={time}
+                        className="flex items-center space-x-3 border-[1px] border-gray-200 hover:bg-gray-100 transition-all p-3 rounded-md cursor-pointer"
                       >
-                        {time}
-                      </Label>
-                    </label>
-                  ))}
+                        <Checkbox
+                          id={`${dateKey}-${time}`}
+                          checked={selectedTimes[dateKey]?.includes(time)}
+                          onCheckedChange={(checked) =>
+                            handleTimeSelect(dateKey, time)
+                          }
+                          className="w-5 h-5 transition-all duration-200"
+                        />
+                        <Label
+                          htmlFor={`${dateKey}-${time}`}
+                          className="text-xs font-medium text-gray-500"
+                        >
+                          {time}
+                        </Label>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           )}
 

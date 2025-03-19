@@ -217,8 +217,8 @@ export default function StepIndicator({
                     <span>{formData.hasPets}</span>
                   </div>
                 )}
-                {formData.preferredDate &&
-                  formData.preferredTime.length > 0 && (
+                {formData.preferredDates &&
+                  formData.preferredTimes.length > 0 && (
                     <>
                       <div className="pt-4 px-6 text-md text-gray-700 flex items-center">
                         <span className="pr-1">REQUESTED TIME</span>
@@ -227,10 +227,10 @@ export default function StepIndicator({
 
                       <div className="text-sm text-gray-600 px-6 pb-2">
                         <div className="flex justify-between font-semibold">
-                          <span>{format(formData.preferredDate, "PPP")}</span>
+                          <span>{format(formData.preferredDates, "PPP")}</span>
                         </div>
                         <div className="flex flex-wrap gap-1 mt-2">
-                          {formData.preferredTime.map((time, index) => (
+                          {formData.preferredTimes.map((time, index) => (
                             <span
                               key={index}
                               className="border-[1px] border-gray-200 rounded-md px-2 py-1 text-gray-500"

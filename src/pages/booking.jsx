@@ -28,8 +28,8 @@ export default function Booking() {
       accessMethod: "",
       specialNotes: "",
       totalPrice: 0,
-      preferredDate: null,
-      preferredTime: "",
+      preferredDates: [],
+      preferredTimes: [],
       streetAddress: "",
       contactInfo: "",
       recurringPlan: null,
@@ -55,8 +55,7 @@ export default function Booking() {
         );
       case 1:
         return (
-          form.getValues("preferredDate") &&
-          form.getValues("preferredTime")?.length > 0
+          form.getValues("preferredDates") && form.getValues("preferredTimes")
         );
       case 2:
         return form.getValues("streetAddress");
