@@ -41,17 +41,14 @@ export default function ServiceAddress({ form, nextStep }) {
   }, [form.watch("streetAddress")]);
 
   const formatUSAddress = (address) => {
-    const { house_number, road, city, state } = address;
+    const { house_number, road, city, state, postcode } = address;
 
-    // Primary line: house number + road
-    const primaryLine =
-      house_number && road ? `${house_number} ${road}` : road || "";
+    // Format the address as "5631 US 19 New Port Richey FL USA"
+    const formattedAddress = [house_number, road, city, state, postcode, "USA"]
+      .filter(Boolean) // Remove empty values
+      .join(" ");
 
-    // Secondary line: city + state
-    const secondaryLine = city && state ? `${city}, ${state}` : state || "";
-
-    // Return array of non-empty lines
-    return [primaryLine, secondaryLine].filter(Boolean);
+    return formattedAddress;
   };
 
   const fetchAddressSuggestions = async (query) => {
@@ -70,11 +67,11 @@ export default function ServiceAddress({ form, nextStep }) {
             item.address.country_code === "us"
         )
         .map((item) => {
-          const formattedLines = formatUSAddress(item.address);
+          const formattedAddress = formatUSAddress(item.address);
           return {
-            display_name: formattedLines.join(" • "),
+            display_name: formattedAddress,
             full_address: item.display_name,
-            lines: formattedLines,
+            lines: [formattedAddress], // Use the formatted address for display
           };
         })
         .filter((suggestion) => suggestion.lines.length > 0);
