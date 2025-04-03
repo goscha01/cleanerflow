@@ -12,6 +12,25 @@ export default function ServiceAddress({ form, nextStep }) {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const inputRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const autocompleteService = useRef(null);
+
+  useEffect(() => {
+    // Load Google Maps API script
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${
+      import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+    }&libraries=places`;
+    script.async = true;
+    script.onload = () => {
+      autocompleteService.current =
+        new window.google.maps.places.AutocompleteService();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   useEffect(() => {
     if (showOverlay && inputRef.current) {
@@ -40,60 +59,46 @@ export default function ServiceAddress({ form, nextStep }) {
     }
   }, [form.watch("streetAddress")]);
 
-  const formatUSAddress = (address) => {
-    const { house_number, road, city, state, postcode } = address;
-
-    // Format the address as "5631 US 19 New Port Richey FL USA"
-    const formattedAddress = [house_number, road, city, state, postcode, "USA"]
-      .filter(Boolean) // Remove empty values
-      .join(" ");
-
-    return formattedAddress;
-  };
-
-  const fetchAddressSuggestions = async (query) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          query
-        )}&countrycodes=us&limit=5&addressdetails=1`
-      );
-      const data = await response.json();
-
-      return data
-        .filter(
-          (item) =>
-            item.address.country === "United States" ||
-            item.address.country_code === "us"
-        )
-        .map((item) => {
-          const formattedAddress = formatUSAddress(item.address);
-          return {
-            display_name: formattedAddress,
-            full_address: item.display_name,
-            lines: [formattedAddress], // Use the formatted address for display
-          };
-        })
-        .filter((suggestion) => suggestion.lines.length > 0);
-    } catch (error) {
-      console.error("Error fetching addresses:", error);
-      return [];
+  const fetchAddressSuggestions = (query) => {
+    if (!autocompleteService.current || query.length < 3) {
+      setSuggestions([]);
+      return;
     }
+
+    setLoading(true);
+    autocompleteService.current.getPlacePredictions(
+      {
+        input: query,
+        componentRestrictions: { country: "us" },
+        types: ["address"],
+      },
+      (predictions, status) => {
+        setLoading(false);
+        if (
+          status === window.google.maps.places.PlacesServiceStatus.OK &&
+          predictions
+        ) {
+          setSuggestions(
+            predictions.map((prediction) => ({
+              display_name: prediction.description,
+              full_address: prediction.description,
+              lines: [prediction.description],
+              place_id: prediction.place_id,
+            }))
+          );
+        } else {
+          setSuggestions([]);
+        }
+      }
+    );
   };
 
   useEffect(() => {
     if (isSelected) {
       setIsButtonDisabled(false);
     }
-    const delayDebounceFn = setTimeout(async () => {
-      if (searchTerm.length > 2) {
-        setLoading(true);
-        const results = await fetchAddressSuggestions(searchTerm);
-        setSuggestions(results);
-        setLoading(false);
-      } else {
-        setSuggestions([]);
-      }
+    const delayDebounceFn = setTimeout(() => {
+      fetchAddressSuggestions(searchTerm);
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
