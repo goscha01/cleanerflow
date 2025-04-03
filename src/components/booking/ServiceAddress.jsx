@@ -17,9 +17,7 @@ export default function ServiceAddress({ form, nextStep }) {
   useEffect(() => {
     // Load Google Maps API script
     const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${
-      import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-    }&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDiKFO7lzmJsUpjy4it32i9h9iSaCvuPuQ&libraries=places`;
     script.async = true;
     script.onload = () => {
       autocompleteService.current =
