@@ -62,9 +62,7 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
         await emailjs.send(
           SERVICE_ID,
           USER_TEMPLATE_ID,
-          {
-            user_email: formData.email,
-          },
+          { ...emailData, user_email: formData.email },
           USER_ID
         );
       }
