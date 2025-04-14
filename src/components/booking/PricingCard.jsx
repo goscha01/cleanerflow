@@ -64,7 +64,7 @@ const calculatePrice = (formData) => {
     if (formData.extras.includes("garage")) basePrice += 50;
   }
 
-  if (formData.hasPets) basePrice += 20;
+  if (formData.hasPets == "Yes") basePrice += 20;
 
   let discount = 0;
   if (formData.recurringPlan > 0) {
