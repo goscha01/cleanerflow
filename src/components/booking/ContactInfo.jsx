@@ -94,7 +94,7 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
   };
 
   return (
-    <div>
+    <div className="px-4">
       <h2 className="text-2xl font-semibold text-gray-700 mb-1">
         Contact Information
       </h2>
@@ -108,25 +108,29 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
             id="name"
             placeholder="Your Full Name"
             {...form.register("name")}
-            className="w-full py-[24px] rounded-xl transition-colors"
+            className="w-full py-6 rounded-xl text-base focus:outline-none focus:ring-0 focus:border-primary"
+            style={{ fontSize: "16px" }}
           />
         </div>
       </div>
-      <div className="flex gap-4 mt-4">
-        <div className="w-[49%]">
+      <div className="flex flex-col sm:flex-row gap-4 mt-4">
+        <div className="w-full sm:w-[49%]">
           <Input
             id="phone"
             placeholder="Phone Number"
             {...form.register("phone")}
-            className="w-full py-[24px] rounded-xl transition-colors"
+            className="w-full py-6 rounded-xl text-base focus:outline-none focus:ring-0 focus:border-primary"
+            style={{ fontSize: "16px" }}
           />
         </div>
-        <div className="w-[49%]">
+        <div className="w-full sm:w-[49%]">
           <Input
             id="email"
             placeholder="Email Address"
+            type="email"
             {...form.register("email")}
-            className="w-full py-[24px] rounded-xl transition-colors"
+            className="w-full py-6 rounded-xl text-base focus:outline-none focus:ring-0 focus:border-primary"
+            style={{ fontSize: "16px" }}
           />
         </div>
       </div>
