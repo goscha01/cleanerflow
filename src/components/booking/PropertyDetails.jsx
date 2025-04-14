@@ -21,6 +21,20 @@ export default function PropertyDetails({ form, nextStep }) {
   const noteRef = useRef(null);
   const [selectedRequirement, setSelectedRequirement] = useState(null);
 
+  useEffect(() => {
+    if (!form.watch("bathrooms")) {
+      form.setValue("bathrooms", 1);
+      form.clearErrors("bathrooms");
+    }
+  }, [form]);
+
+  useEffect(() => {
+    if (!form.watch("bedrooms")) {
+      form.setValue("bedrooms", 1);
+      form.clearErrors("bedrooms");
+    }
+  }, [form]);
+
   const scrollToSection = (ref) => {
     const offset = 130;
     if (ref.current) {
@@ -69,13 +83,15 @@ export default function PropertyDetails({ form, nextStep }) {
 
   // Auto-scroll on selection
   useEffect(() => {
-    if (form.watch("bedrooms")) {
+    const selectedBathrooms = form.watch("bedrooms");
+    if (selectedBathrooms && selectedBathrooms > 1) {
       scrollToSection(bathroomsRef);
     }
   }, [form.watch("bedrooms")]);
 
   useEffect(() => {
-    if (form.watch("bathrooms")) {
+    const selectedBathrooms = form.watch("bathrooms");
+    if (selectedBathrooms && selectedBathrooms > 1) {
       scrollToSection(extrasRef);
     }
   }, [form.watch("bathrooms")]);
