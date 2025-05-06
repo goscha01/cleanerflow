@@ -24,6 +24,7 @@
     "lucide-react": "^0.477.0",
     "path": "^0.12.7",
     "react": "^19.0.0",
+    "react-datepicker": "^8.3.0",
     "react-day-picker": "^9.5.1",
     "react-dom": "^19.0.0",
     "react-google-autocomplete": "^2.7.4",

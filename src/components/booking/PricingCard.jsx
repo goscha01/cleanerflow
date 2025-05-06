@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { pricingData } from "@/constants/price";
 
 const calculatePrice = (formData) => {
@@ -151,10 +151,11 @@ export default function PricingCard({ form }) {
 
               {formData.preferredDates.map((date) => {
                 const times = formData.preferredTimes[date] || [];
+                const parsedDate = parse(date, "yyyy-MM-dd", new Date());
                 return (
                   <div key={date} className="text-sm text-gray-600 px-6 pb-2">
                     <div className="flex justify-between font-semibold">
-                      <span>{format(new Date(date), "PPP")}</span>
+                      <span>{format(parsedDate, "PPP")}</span>
                     </div>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {times.map((time, index) => (
