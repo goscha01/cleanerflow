@@ -44,6 +44,7 @@ export default function Booking() {
     form.reset();
     form.setValue("serviceType", serviceType);
     setShowBookingSteps(true);
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
   const validateCurrentStep = () => {
     switch (currentStep) {
@@ -105,8 +106,10 @@ export default function Booking() {
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       setShowBookingSteps(false);
+      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 

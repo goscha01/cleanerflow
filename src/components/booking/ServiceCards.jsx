@@ -46,7 +46,10 @@ export default function ServiceCards({ onServiceSelect }) {
               key={service.id}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => onServiceSelect(service.id)}
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: "instant" });
+                onServiceSelect(service.id);
+              }}
             >
               <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors">
                 <CardContent className="p-6 flex flex-col items-center text-center">
