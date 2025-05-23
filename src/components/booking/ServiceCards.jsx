@@ -28,7 +28,7 @@ export default function ServiceCards({ onServiceSelect }) {
   return (
     <div className="flex items-center justify-center md:mt-24 mt-20">
       <div className="text-center">
-        <div className="top-0 fixed p-4 left-1/2 -translate-x-1/2 w-full border-b border-gray-200 bg-white z-10">
+        {/* <div className="top-0 fixed p-4 left-1/2 -translate-x-1/2 w-full border-b border-gray-200 bg-white z-10">
           <div className="flex justify-center">
             <img
               src="/logo/LogoUp2.png"
@@ -36,7 +36,7 @@ export default function ServiceCards({ onServiceSelect }) {
               className="sm:w-[300px] w-[200px]"
             />
           </div>
-        </div>
+        </div> */}
 
         <h2 className="text-3xl font-semibold text-gray-900">Select Service</h2>
 
