@@ -26,7 +26,7 @@ const services = [
 
 export default function ServiceCards({ onServiceSelect }) {
   return (
-    <div className="flex items-center justify-center md:mt-16 mt-16">
+    <div className="flex items-center justify-center md:mt-12 mt-12">
       <div className="text-center">
         {/* <div className="top-0 fixed p-4 left-1/2 -translate-x-1/2 w-full border-b border-gray-200 bg-white z-10">
           <div className="flex justify-center">

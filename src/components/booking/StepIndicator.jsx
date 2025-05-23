@@ -114,13 +114,13 @@ export default function StepIndicator({
             style={{ width: "30px", height: "25px" }}
           />
         </Button>
-        <div>
+        {/* <div>
           <img
             src="/logo/LogoUp2.png"
             alt=""
             className="sm:w-[300px] w-[200px]"
           />
-        </div>
+        </div> */}
         <div />
         <div />
         <div />
