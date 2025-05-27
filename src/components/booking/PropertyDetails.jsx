@@ -347,7 +347,7 @@ export default function PropertyDetails({ form, nextStep }) {
         </div>
       </section>
 
-      <section ref={requirementsRef}>
+      {/* <section ref={requirementsRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-6">
           How do we get in?
         </h2>
@@ -387,9 +387,9 @@ export default function PropertyDetails({ form, nextStep }) {
             </Card>
           ))}
         </div>
-      </section>
+      </section> */}
 
-      <section ref={noteRef}>
+      {/* <section ref={noteRef}>
         <h2 className="text-xl font-semibold text-gray-900 mt-16 mb-2">
           Special Notes or Instructions
         </h2>
@@ -410,7 +410,7 @@ export default function PropertyDetails({ form, nextStep }) {
           className="min-h-[100px]"
           {...form.register("specialNotes")}
         />
-      </section>
+      </section> */}
       <div className="mt-8 flex justify-start">
         <Button
           type="button"
