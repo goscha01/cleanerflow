@@ -187,9 +187,9 @@ export default function Booking() {
           </div>
         </div>
       </div>
-      <div className="bg-gray-50 mt-12">
+      {/* <div className="bg-gray-50 mt-12">
         <Detail />
-      </div>
+      </div> */}
     </>
   );
 }
