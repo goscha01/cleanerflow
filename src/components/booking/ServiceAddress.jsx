@@ -233,7 +233,7 @@ export default function ServiceAddress({ form, nextStep }) {
         </div>
       )}
 
-      <div className="mt-8 flex justify-start">
+      <div className="mt-16 mb-16 flex justify-start">
         <Button
           type="button"
           onClick={nextStep}
