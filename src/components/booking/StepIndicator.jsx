@@ -139,18 +139,30 @@ export default function StepIndicator({
         className="px-4 py-2 border-b-2 lg:hidden flex-col cursor-pointer"
         onClick={() => setSheetOpen(true)}
       >
-        <p className="text-lg text-gray-600">Service Request</p>
-        <div className="flex justify-between">
-          <p className="text-xl text-gray-600 font-semibold mt-1">
-            {formData.serviceType === "regular"
-              ? "Regular Cleaning"
-              : formData.serviceType === "deep"
-              ? "Deep Cleaning"
-              : formData.serviceType === "move"
-              ? "Move In/Out Cleaning"
-              : "Airbnb Cleaning"}
-          </p>
-          <p className="text-2xl text-primary font-semibold">${total}</p>
+        <div className="flex justify-between items-start">
+          {/* Cleaning type and property info */}
+          <div className="flex flex-col">
+            <p className="text-xl text-gray-600 font-semibold">
+              {formData.serviceType === "regular"
+                ? "Regular Cleaning"
+                : formData.serviceType === "deep"
+                ? "Deep Cleaning"
+                : formData.serviceType === "move"
+                ? "Move In/Out Cleaning"
+                : "Airbnb Cleaning"}
+            </p>
+            <div className="text-sm text-gray-500 mt-1">
+              {formData.bedrooms > 0 && `${formData.bedrooms} bd`}{" "}
+              {formData.bathrooms > 0 && `• ${formData.bathrooms} ba`}{" "}
+              {formData.square_feet && `• ${formData.square_feet} sqft`}
+            </div>
+          </div>
+
+          {/* Total label and amount styled like service type */}
+          <div className="text-right">
+            <p className="text-xl text-gray-600 font-semibold">Total</p>
+            <p className="text-2xl text-primary font-semibold">${total}</p>
+          </div>
         </div>
       </div>
 

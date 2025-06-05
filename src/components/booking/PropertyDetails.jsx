@@ -126,7 +126,7 @@ export default function PropertyDetails({ form, nextStep }) {
             </div>
           )}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-1 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 md:gap-2 gap-1">
           {bedrooms.map((num) => (
             <motion.div
               key={num}
@@ -274,32 +274,29 @@ export default function PropertyDetails({ form, nextStep }) {
           How would you rate your property condition in the rate from 1 dirty to
           10 clean?
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-2">
-          {conditions.map((condition) => (
-            <motion.div
-              key={condition.id}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => handleConditionSelect(condition.id)}
-            >
-              <Card
-                className={`cursor-pointer transition-colors ${
-                  form.watch("propertyCondition") === condition.id
-                    ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
-                    : // : form.formState.errors.propertyCondition
-                      // ? "border-red-500"
-                      ""
-                }`}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="text-lg">{condition.label}</div>
-                  <div className="text-sm text-gray-600">
-                    {condition.description}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {[...conditions].reverse().map((condition) => (
+  <motion.div
+    key={condition.id}
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={() => handleConditionSelect(condition.id)}
+  >
+    <Card
+      className={`cursor-pointer transition-colors ${
+        form.watch("propertyCondition") === condition.id
+          ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
+          : ""
+      }`}
+    >
+      <CardContent className="p-6 text-center">
+        <div className="text-lg">{condition.label}</div>
+        <div className="text-sm text-gray-600">{condition.description}</div>
+      </CardContent>
+    </Card>
+  </motion.div>
+))}
+
         </div>
       </section>
 

@@ -48,8 +48,13 @@ body {
   scrollbar-width: none;
 }
 
+
+
 @layer components {
   button {
     @apply mt-[4rem] mb-[4rem];
   }
+  .equal-button {
+  @apply min-h-[60px] flex items-center justify-center text-center;
+}
 }
