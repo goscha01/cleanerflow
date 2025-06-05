@@ -242,7 +242,7 @@ export default function PreferredTimes({ form, nextStep }) {
           type="button"
           onClick={nextStep}
           disabled={!!error}
-          className={`px-16 py-6 text-white ${
+          className={`continue-button px-16 py-6 text-white ${
             error
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary hover:bg-primaryHover"

@@ -157,7 +157,7 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
           onClick={handleSubmit}
           type="button"
           disabled={errors || loading}
-          className={`px-16 py-6 w-full text-white text-lg ${
+          className={`continue-button px-16 py-6 w-full text-white text-lg ${
             errors || loading
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary hover:bg-primaryHover"

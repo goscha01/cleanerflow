@@ -238,7 +238,7 @@ export default function ServiceAddress({ form, nextStep }) {
           type="button"
           onClick={nextStep}
           disabled={isButtonDisabled}
-          className={`px-16 py-6 text-white ${
+          className={`continue-button px-16 py-6 text-white ${
             isButtonDisabled
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary hover:bg-primary/90"

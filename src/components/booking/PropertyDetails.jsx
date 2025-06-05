@@ -398,7 +398,7 @@ export default function PropertyDetails({ form, nextStep }) {
         <Button
           type="button"
           onClick={nextStep}
-          className="bg-primary text-white px-16 py-6 hover:bg-primaryHover"
+          className="continue-button bg-primary text-white px-16 py-6 hover:bg-primaryHover"
         >
           Continue
         </Button>

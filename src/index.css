@@ -51,8 +51,8 @@ body {
 
 
 @layer components {
-  button {
-    @apply mt-[4rem] mb-[4rem];
+  .continue-button {
+    @apply mt-12 mb-12; /* 4px margin (1 = 0.25rem = 4px in Tailwind) */
   }
   .equal-button {
   @apply min-h-[60px] flex items-center justify-center text-center;
