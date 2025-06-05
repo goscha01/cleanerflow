@@ -107,7 +107,7 @@ export default function StepIndicator({
         <Button
           type="button"
           onClick={prevStep}
-          className="mb-1 flex items-center gap-2 md:mx-32 mx-4 bg-transparent hover:bg-transparent"
+          className="mt-0 mb-1 flex items-center gap-2 md:mx-32 mx-4 bg-transparent hover:bg-transparent"
         >
           <ArrowLeft
             className="text-primary"
