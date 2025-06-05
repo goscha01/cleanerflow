@@ -18,6 +18,7 @@ export default function PropertyDetails({ form, nextStep }) {
   const conditionRef = useRef(null);
   const petRef = useRef(null);
   const requirementsRef = useRef(null);
+  const continueBtton = useRef(null)
   const noteRef = useRef(null);
   const [selectedRequirement, setSelectedRequirement] = useState(null);
 
@@ -104,7 +105,7 @@ export default function PropertyDetails({ form, nextStep }) {
 
   useEffect(() => {
     if (form.watch("hasPets")) {
-      scrollToSection(requirementsRef);
+      scrollToSection(continueBtton);
     }
   }, [form.watch("hasPets")]);
 
@@ -276,27 +277,28 @@ export default function PropertyDetails({ form, nextStep }) {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           {[...conditions].reverse().map((condition) => (
-  <motion.div
-    key={condition.id}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-    onClick={() => handleConditionSelect(condition.id)}
-  >
-    <Card
-      className={`cursor-pointer transition-colors ${
-        form.watch("propertyCondition") === condition.id
-          ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
-          : ""
-      }`}
-    >
-      <CardContent className="p-6 text-center">
-        <div className="text-lg">{condition.label}</div>
-        <div className="text-sm text-gray-600">{condition.description}</div>
-      </CardContent>
-    </Card>
-  </motion.div>
-))}
-
+            <motion.div
+              key={condition.id}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleConditionSelect(condition.id)}
+            >
+              <Card
+                className={`cursor-pointer transition-colors ${
+                  form.watch("propertyCondition") === condition.id
+                    ? "border-primary border-2 text-primary font-bold bg-primaryDulls"
+                    : ""
+                }`}
+              >
+                <CardContent className="p-6 text-center">
+                  <div className="text-lg">{condition.label}</div>
+                  <div className="text-sm text-gray-600">
+                    {condition.description}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </section>
 
@@ -392,7 +394,7 @@ export default function PropertyDetails({ form, nextStep }) {
           {...form.register("specialNotes")}
         />
       </section> */}
-      <div className="mt-8 flex justify-start">
+      <div className="mt-8 flex justify-start" ref={continueBtton}>
         <Button
           type="button"
           onClick={nextStep}
