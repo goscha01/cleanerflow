@@ -349,7 +349,7 @@ export const extras = [
   },
   {
     id: "laundry",
-    label: "Laundry Wash & Dry",
+    label: "Laundry",
     price: 20,
     image: "/extras/laundry.png",
     description: "1 load included",

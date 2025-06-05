@@ -165,10 +165,7 @@ export default function PropertyDetails({ form, nextStep }) {
           )}
         </h2>
         <p className="text-[16px] text-gray-600 mb-6 text-justify">
-          For our service, a "bathroom" can be a full-sized bathroom (with a tub
-          and/or shower) or a half-bathroom (with just a toilet and basin).
-          Therefore, if you have 1 full-sized bathroom and 1 half-bathroom, it
-          will be considered as 2 bathrooms in total.
+          For our service a half-bathroom is considered as full bathrooms.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-3 md:gap-2 gap-1">
           {bathrooms.map((num) => (
@@ -206,7 +203,7 @@ export default function PropertyDetails({ form, nextStep }) {
           Add on extras for a cleaning upgrade.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 md:gap-2 gap-1 ">
           {extras.map((extra, index) => {
             const isChecked = (form.watch("extras") || []).includes(extra.id);
             return (
@@ -216,7 +213,7 @@ export default function PropertyDetails({ form, nextStep }) {
                   isChecked ? "border-primary border-2 bg-primaryDull" : ""
                 }`}
               >
-                <CardContent className="flex flex-1 items-center space-x-4">
+                <CardContent className="flex flex-1 items-center space-x-4 p-0">
                   <div className="relative">
                     <input
                       type="checkbox"
@@ -253,23 +250,10 @@ export default function PropertyDetails({ form, nextStep }) {
                         >
                           {extra.label}
                         </span>
-                        <p className="text-sm text-gray-600">
-                          {extra.description}
-                        </p>
                       </div>
                     </div>
                   </Label>
                 </CardContent>
-
-                {index < 5 && extra.image && (
-                  <div className="flex flex-col items-center">
-                    <img
-                      src={extra.image}
-                      alt={extra.label}
-                      className="w-[40px] h-[45px] object-cover rounded-md mb-2"
-                    />
-                  </div>
-                )}
               </Card>
             );
           })}
