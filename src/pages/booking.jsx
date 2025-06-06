@@ -37,6 +37,7 @@ export default function Booking() {
   });
 
   const onSubmit = () => {
+        console.log("from", form);
     console.log("submitted");
   };
 

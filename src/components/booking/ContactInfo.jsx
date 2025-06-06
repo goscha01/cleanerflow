@@ -5,6 +5,7 @@ import emailjs from "emailjs-com";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react"; // Spinner Icon
 import { useNavigate } from "react-router-dom";
+import PreferredTimes from "./PreferredTimes";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
 const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
@@ -34,6 +35,14 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
 
   const handleSubmit = async () => {
     setLoading(true);
+let formattedData = Object.entries(formData.preferredTimes)
+  .map(([dateStr, timeStr]) => {
+    const date = new Date(dateStr);
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    return ` ${formattedDate}: \n${timeStr} `;
+  })
+  .join('\n\n');
     try {
       const emailData = {
         name: formData.name,
@@ -49,8 +58,10 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
         accessMethod: formData.accessMethod.code,
         specialNotes: formData.specialNotes,
         totalPrice: formData.totalPrice,
+        date: formData.preferredDates.join(", "),
+        time: formattedData,
       };
-
+      console.log("emaILdATA", emailData);
       await emailjs.send(
         SERVICE_ID,
         ADMIN_TEMPLATE_ID,
