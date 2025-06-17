@@ -5,6 +5,8 @@ import emailjs from "emailjs-com";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react"; // Spinner Icon
 import { useNavigate } from "react-router-dom";
+import ReactGA from 'react-ga4';
+
 import PreferredTimes from "./PreferredTimes";
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
@@ -35,6 +37,11 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
 
   const handleSubmit = async () => {
     setLoading(true);
+    ReactGA.event({
+        category: 'User',
+        action: 'Clicked a button',
+        label: 'Request Appointment' // Optional label for more details
+      });
 let formattedData = Object.entries(formData.preferredTimes)
   .map(([dateStr, timeStr]) => {
     const date = new Date(dateStr);

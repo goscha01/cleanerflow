@@ -4,6 +4,9 @@ import { useLocation } from "react-router-dom";
 import NotFound from "@/pages/not-found";
 import Booking from "@/pages/booking";
 import Home from "@/pages/home";
+import ReactGA from 'react-ga4';
+
+ReactGA.initialize('G-8W7WSSFNC6');
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
@@ -15,6 +18,11 @@ function ScrollToTop() {
 
   return null;
 }
+
+const { location } = useLocation();
+useEffect(() => {
+        ReactGA.send({ hitType: "pageview", page: location.pathname });
+      }, [location]);
 
 function App() {
   return (
