@@ -5,7 +5,7 @@ import emailjs from "emailjs-com";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react"; // Spinner Icon
 import { useNavigate } from "react-router-dom";
-import ReactGA from 'react-ga4';
+import ReactGA from "react-ga4";
 
 import PreferredTimes from "./PreferredTimes";
 
@@ -37,19 +37,19 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
 
   const handleSubmit = async () => {
     setLoading(true);
-    ReactGA.event({
-        category: 'User',
-        action: 'Clicked a button',
-        label: 'Request Appointment' // Optional label for more details
-      });
-let formattedData = Object.entries(formData.preferredTimes)
-  .map(([dateStr, timeStr]) => {
-    const date = new Date(dateStr);
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
-    return ` ${formattedDate}: \n${timeStr} `;
-  })
-  .join('\n\n');
+    ReactGA.event("request_appointment", {
+      value: formData.totalPrice,
+      button_location: "ContactInfo",
+      send_notifications: sendNotifications,
+    });
+    let formattedData = Object.entries(formData.preferredTimes)
+      .map(([dateStr, timeStr]) => {
+        const date = new Date(dateStr);
+        const options = { weekday: "long", month: "long", day: "numeric" };
+        const formattedDate = date.toLocaleDateString("en-US", options);
+        return ` ${formattedDate}: \n${timeStr} `;
+      })
+      .join("\n\n");
     try {
       const emailData = {
         name: formData.name,

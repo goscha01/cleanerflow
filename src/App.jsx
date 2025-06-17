@@ -19,15 +19,19 @@ function ScrollToTop() {
   return null;
 }
 
-const { location } = useLocation();
-useEffect(() => {
-        ReactGA.send({ hitType: "pageview", page: location.pathname });
-      }, [location]);
+function GAListener() {
+  const location = useLocation();
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname });
+  }, [location]);
+  return null;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <GAListener /> {/* Track GA4 page views */}
       <Routes>
         <Route path="/" element={<Booking />} />
         <Route path="*" element={<NotFound />} />
