@@ -65,6 +65,7 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
         accessMethod: formData.accessMethod.code,
         specialNotes: formData.specialNotes,
         totalPrice: formData.totalPrice,
+        total: formData.total,
         date: formData.preferredDates.join(", "),
         time: formattedData,
       };
