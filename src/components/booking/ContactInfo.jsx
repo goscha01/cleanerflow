@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react"; // Spinner Icon
 import { useNavigate } from "react-router-dom";
 import ReactGA from "react-ga4";
+import { calculatePrice } from '@/lib/calculatePrice'
+import { pricingData } from "@/constants/price";
 
 import PreferredTimes from "./PreferredTimes";
 
@@ -34,6 +36,8 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
 
     validateForm();
   }, [formData.name, formData.phone, formData.email]);
+
+   const { total } = calculatePrice(formData);
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -64,8 +68,7 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
         hasPets: formData.hasPets,
         accessMethod: formData.accessMethod.code,
         specialNotes: formData.specialNotes,
-        totalPrice: formData.totalPrice,
-        total: formData.total,
+        totalPrice: total,
         date: formData.preferredDates.join(", "),
         time: formattedData,
       };
