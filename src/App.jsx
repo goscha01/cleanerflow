@@ -27,6 +27,21 @@ function GAListener() {
   return null;
 }
 
+useEffect(() => {
+  const script = document.createElement('script');
+  script.src = 'https://www.googletagmanager.com/gtag/js?id=G-6ZB89H49SD';
+  script.async = true;
+  document.head.appendChild(script);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { window.dataLayer.push(arguments); }
+  window.gtag = gtag;
+
+  gtag('js', new Date());
+  gtag('config', 'G-6ZB89H49SD'); // GA4
+  gtag('config', 'AW-17067419398'); // Optional: your Google Ads account ID
+}, []);
+
 function App() {
   return (
     <BrowserRouter>

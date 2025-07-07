@@ -37,8 +37,15 @@ export default function Booking() {
   });
 
   const onSubmit = () => {
-        console.log("from", form);
+    console.log("from", form);
     console.log("submitted");
+    if (window.gtag) {
+      window.gtag("event", "generate_lead", {
+        event_category: "Booking",
+        event_label: "Estimate Form Submitted",
+        value: 1,
+      });
+    }
   };
 
   const handleServiceSelect = (serviceType) => {
@@ -95,7 +102,13 @@ export default function Booking() {
       }
       return;
     }
-
+    if (window.gtag) {
+      window.gtag("event", `booking_step_${currentStep + 1}`, {
+        event_category: "Booking Funnel",
+        event_label: `Step ${currentStep + 1}`,
+        value: 1,
+      });
+    }
     if (currentStep < TOTAL_STEPS - 1) {
       setCurrentStep(currentStep + 1);
       window.scrollTo({ top: 0, behavior: "instant" });
