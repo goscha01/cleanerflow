@@ -20,7 +20,7 @@ const GoogleTag = () => {
 
   }, []);
 
-  return null;
+  return null; 
 };
 
 export default GoogleTag;
