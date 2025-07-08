@@ -7,7 +7,7 @@ import Home from "@/pages/home";
 import ReactGA from 'react-ga4';
 import GoogleTag from "./GoogleTag";
 
-ReactGA.initialize('G-8W7WSSFNC6');
+ReactGA.initialize('G-6ZB89H49SD');
 
 // ScrollToTop component to reset scroll position on route change
 function ScrollToTop() {
