@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
 import { Form } from "@/components/ui/form";
@@ -9,12 +9,21 @@ import PreferredTimes from "@/components/booking/PreferredTimes";
 import PricingCard from "@/components/booking/PricingCard";
 import ServiceAddress from "@/components/booking/ServiceAddress";
 import ContactInfo from "@/components/booking/ContactInfo";
-import Detail from "@/components/booking/Detail";
+import emailjs from "emailjs-com";
+import { calculatePrice } from "@/lib/calculatePrice";
+
+const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
+const USER_ID = import.meta.env.VITE_USER_ID;
+const ADMIN_TEMPLATE_ID = import.meta.env.VITE_ADMIN_TEMPLATE_ID;
+const USER_TEMPLATE_ID = import.meta.env.VITE_USER_TEMPLATE_ID;
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+
 const TOTAL_STEPS = 5;
 
 export default function Booking() {
   const [showBookingSteps, setShowBookingSteps] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const formRef = useRef(null);
 
   const form = useForm({
     defaultValues: {
@@ -33,18 +42,67 @@ export default function Booking() {
       streetAddress: "",
       contactInfo: "",
       recurringPlan: null,
+      name: "",
+      phone: "",
+      email: "",
+      sendNotifications: true,
     },
   });
 
-  const onSubmit = () => {
-    console.log("from", form);
-    console.log("submitted");
+  const onSubmit = async (formData) => {
+    const { total } = calculatePrice(formData);
+    console.log("submitted")
+
     if (window.gtag) {
       window.gtag("event", "generate_lead", {
         event_category: "Booking",
         event_label: "Estimate Form Submitted",
-        value: 1,
+        value: total,
       });
+    }
+
+    const formattedTimes = Object.entries(formData.preferredTimes)
+      .map(([dateStr, timeStr]) => {
+        const date = new Date(dateStr);
+        const options = { weekday: "long", month: "long", day: "numeric" };
+        const formattedDate = date.toLocaleDateString("en-US", options);
+        return ` ${formattedDate}: \n${timeStr} `;
+      })
+      .join("\n\n");
+
+    const emailData = {
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      streetAddress: formData.streetAddress,
+      serviceType: formData.serviceType,
+      bedrooms: formData.bedrooms,
+      bathrooms: formData.bathrooms,
+      extras: formData.extras.join(", "),
+      propertyCondition: formData.propertyCondition,
+      hasPets: formData.hasPets,
+      accessMethod: formData.accessMethod.code,
+      specialNotes: formData.specialNotes,
+      totalPrice: total,
+      date: formData.preferredDates.join(", "),
+      time: formattedTimes,
+    };
+
+    try {
+      await emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, { ...emailData, admin_email: ADMIN_EMAIL }, USER_ID);
+
+      if (formData.sendNotifications) {
+        await emailjs.send(SERVICE_ID, USER_TEMPLATE_ID, {
+          ...emailData,
+          user_email: formData.email,
+        }, USER_ID);
+      }
+
+      form.reset();
+      setCurrentStep(0);
+      setShowBookingSteps(false);
+    } catch (error) {
+      console.error("Failed to send email:", error);
     }
   };
 
@@ -54,6 +112,7 @@ export default function Booking() {
     setShowBookingSteps(true);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
+
   const validateCurrentStep = () => {
     switch (currentStep) {
       case 0:
@@ -64,12 +123,17 @@ export default function Booking() {
         );
       case 1:
         return (
-          form.getValues("preferredDates") && form.getValues("preferredTimes")
+          form.getValues("preferredDates") &&
+          form.getValues("preferredTimes")
         );
       case 2:
         return form.getValues("streetAddress");
       case 3:
-        return form.getValues("contactInfo");
+        return (
+          form.getValues("name") &&
+          form.getValues("phone") &&
+          form.getValues("email")
+        );
       default:
         return false;
     }
@@ -77,31 +141,10 @@ export default function Booking() {
 
   const nextStep = async () => {
     if (!validateCurrentStep()) {
-      form.trigger();
-      const result = await form.trigger();
-      if (result) {
-        if (form.getValues("bedrooms") == null) {
-          form.setError("bedrooms", {
-            type: "required",
-            message: "Please select number of bedrooms",
-          });
-        }
-        if (form.getValues("bathrooms") == null) {
-          form.setError("bathrooms", {
-            type: "required",
-            message: "Please select number of bathrooms",
-          });
-        }
-
-        if (form.getValues("propertyCondition") == null) {
-          form.setError("propertyCondition", {
-            type: "required",
-            message: "Please select property condition",
-          });
-        }
-      }
+      await form.trigger();
       return;
     }
+
     if (window.gtag) {
       window.gtag("event", `booking_step_${currentStep + 1}`, {
         event_category: "Booking Funnel",
@@ -109,22 +152,22 @@ export default function Booking() {
         value: 1,
       });
     }
+
     if (currentStep < TOTAL_STEPS - 1) {
       setCurrentStep(currentStep + 1);
       window.scrollTo({ top: 0, behavior: "instant" });
     } else {
-      form.handleSubmit(onSubmit)();
+      formRef.current?.requestSubmit();
     }
   };
 
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       setShowBookingSteps(false);
-      window.scrollTo({ top: 0, behavior: "instant" });
     }
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   if (!showBookingSteps) {
@@ -153,6 +196,7 @@ export default function Booking() {
             <div className="lg:col-span-2">
               <Form {...form}>
                 <form
+                  ref={formRef}
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-8"
                 >
@@ -164,28 +208,21 @@ export default function Booking() {
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ duration: 0.3 }}
                     >
-                      {!showBookingSteps && (
-                        <ServiceCards onServiceSelect={handleServiceSelect} />
+                      {currentStep === 0 && (
+                        <PropertyDetails form={form} nextStep={nextStep} />
                       )}
-                      {showBookingSteps && (
-                        <>
-                          {currentStep === 0 && (
-                            <PropertyDetails form={form} nextStep={nextStep} />
-                          )}
-                          {currentStep === 1 && (
-                            <PreferredTimes form={form} nextStep={nextStep} />
-                          )}
-                          {currentStep === 2 && (
-                            <ServiceAddress form={form} nextStep={nextStep} />
-                          )}
-                          {currentStep === 3 && (
-                            <ContactInfo
-                              form={form}
-                              setCurrentStep={setCurrentStep}
-                              currentStep={currentStep}
-                            />
-                          )}
-                        </>
+                      {currentStep === 1 && (
+                        <PreferredTimes form={form} nextStep={nextStep} />
+                      )}
+                      {currentStep === 2 && (
+                        <ServiceAddress form={form} nextStep={nextStep} />
+                      )}
+                      {currentStep === 3 && (
+                        <ContactInfo
+                          form={form}
+                          setCurrentStep={setCurrentStep}
+                          currentStep={currentStep}
+                        />
                       )}
                     </motion.div>
                   </AnimatePresence>
@@ -193,17 +230,12 @@ export default function Booking() {
               </Form>
             </div>
 
-            {showBookingSteps && (
-              <div className="lg:col-span-1">
-                <PricingCard form={form} />
-              </div>
-            )}
+            <div className="lg:col-span-1">
+              <PricingCard form={form} />
+            </div>
           </div>
         </div>
       </div>
-      {/* <div className="bg-gray-50 mt-12">
-        <Detail />
-      </div> */}
     </>
   );
 }

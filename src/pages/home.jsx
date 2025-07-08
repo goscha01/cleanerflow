@@ -29,7 +29,7 @@ const HomePage = () => {
           className="mt-4 bg-white text-primary px-6 py-3 rounded-xl hover:bg-gray-200"
           onClick={handleClick}
         >
-          Get Quote
+          Thank you!
         </Button>
       </div>
     </div>

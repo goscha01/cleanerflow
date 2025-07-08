@@ -1,110 +1,37 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import emailjs from "emailjs-com";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react"; // Spinner Icon
-import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import ReactGA from "react-ga4";
-import { calculatePrice } from '@/lib/calculatePrice'
-import { pricingData } from "@/constants/price";
 
-import PreferredTimes from "./PreferredTimes";
-
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
-const SERVICE_ID = import.meta.env.VITE_SERVICE_ID;
-const USER_ID = import.meta.env.VITE_USER_ID;
-const ADMIN_TEMPLATE_ID = import.meta.env.VITE_ADMIN_TEMPLATE_ID;
-const USER_TEMPLATE_ID = import.meta.env.VITE_USER_TEMPLATE_ID;
 const VITE_COUPON_CODE = import.meta.env.VITE_COUPON_CODE;
 
-export default function ContactInfo({ form, currentStep, setCurrentStep }) {
-  const navigate = useNavigate();
+export default function ContactInfo({ form }) {
   const formData = form.watch();
   const [sendNotifications, setSendNotifications] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [coupon, setCoupon] = useState("");
   const [couponError, setCouponError] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const validateForm = () => {
       const isValid = formData.name && formData.phone && formData.email;
       setErrors(!isValid);
     };
-
     validateForm();
   }, [formData.name, formData.phone, formData.email]);
 
-   const { total } = calculatePrice(formData);
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    ReactGA.event("request_appointment", {
-      value: formData.totalPrice,
-      button_location: "ContactInfo",
-      send_notifications: sendNotifications,
-    });
-    let formattedData = Object.entries(formData.preferredTimes)
-      .map(([dateStr, timeStr]) => {
-        const date = new Date(dateStr);
-        const options = { weekday: "long", month: "long", day: "numeric" };
-        const formattedDate = date.toLocaleDateString("en-US", options);
-        return ` ${formattedDate}: \n${timeStr} `;
-      })
-      .join("\n\n");
-    try {
-      const emailData = {
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        streetAddress: formData.streetAddress,
-        serviceType: formData.serviceType,
-        bedrooms: formData.bedrooms,
-        bathrooms: formData.bathrooms,
-        extras: formData.extras.join(", "),
-        propertyCondition: formData.propertyCondition,
-        hasPets: formData.hasPets,
-        accessMethod: formData.accessMethod.code,
-        specialNotes: formData.specialNotes,
-        totalPrice: total,
-        date: formData.preferredDates.join(", "),
-        time: formattedData,
-      };
-      console.log("emaILdATA", emailData);
-      await emailjs.send(
-        SERVICE_ID,
-        ADMIN_TEMPLATE_ID,
-        { ...emailData, admin_email: ADMIN_EMAIL },
-        USER_ID
-      );
-
-      if (sendNotifications) {
-        await emailjs.send(
-          SERVICE_ID,
-          USER_TEMPLATE_ID,
-          {
-            ...emailData,
-            user_email: formData.email,
-          },
-          USER_ID
-        );
-      }
-      setCurrentStep(currentStep + 1);
-      form.reset();
-      navigate("/home");
-    } catch (error) {
-      console.error("Failed to send email:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    form.setValue("sendNotifications", sendNotifications);
+  }, [sendNotifications]);
 
   const handleModalOpen = () => {
     setShowModal(true);
     form.setValue("recurringPlan", 0);
   };
+
   const handleCouponApply = () => {
     if (coupon === VITE_COUPON_CODE) {
       form.setValue("recurringPlan", Number(coupon));
@@ -176,31 +103,20 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
       </div>
       <div className="mt-4 flex justify-start">
         <Button
-          onClick={handleSubmit}
-          type="button"
-          disabled={errors || loading}
+          type="submit"
+          disabled={errors}
           className={`continue-button px-16 py-6 w-full text-white text-lg ${
-            errors || loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-primary hover:bg-primaryHover"
+            errors ? "bg-gray-400 cursor-not-allowed" : "bg-primary hover:bg-primaryHover"
           }`}
         >
-          {loading ? (
-            <>
-              <Loader2 className="animate-spin w-5 h-5 mr-2" />
-              Processing...
-            </>
-          ) : (
-            "Request Appointment"
-          )}
+          Request Appointment
         </Button>
       </div>
-      {/* Coupon Modal */}
+
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
           <div className="bg-white rounded-xl p-6 w-[90%] max-w-md shadow-lg">
             <h2 className="text-xl font-bold mb-4">Enter Coupon Code</h2>
-
             <Input
               placeholder="Enter your coupon code"
               value={coupon}
@@ -210,15 +126,13 @@ export default function ContactInfo({ form, currentStep, setCurrentStep }) {
             {couponError && (
               <p className="text-red-500 text-sm mb-4">{couponError}</p>
             )}
-
             <div className="flex justify-end gap-4">
               <Button
                 onClick={() => setShowModal(false)}
-                className="bg-trasparent border border-primary hover:text-white px-6 py-2 rounded-lg"
+                className="bg-transparent border border-primary hover:text-white px-6 py-2 rounded-lg"
               >
                 Cancel
               </Button>
-
               <Button
                 onClick={handleCouponApply}
                 disabled={!coupon}
