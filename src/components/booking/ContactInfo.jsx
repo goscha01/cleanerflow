@@ -93,14 +93,14 @@ export default function ContactInfo({ form }) {
           Send me notifications about this service request via text message
         </label>
       </div>
-      <div className="mt-4">
+      {/* <div className="mt-4">
         <Button
           onClick={handleModalOpen}
           className="bg-transparent hover:bg-transparent hover:text-primaryHover text-primary text-lg font-extrabold"
         >
           Apply Coupon
         </Button>
-      </div>
+      </div> */}
       <div className="mt-4 flex justify-start">
         <Button
           type="submit"
