@@ -61,7 +61,7 @@ export default function Booking() {
       });
     }
     window.gtag('event', 'generate_lead', {
-  send_to: 'G-6ZB89H49SD',
+  send_to: 'G-8W7WSSFNC6',
   event_category: 'lead',
   event_label: 'Booking Wizard Complete',
   value: 1
