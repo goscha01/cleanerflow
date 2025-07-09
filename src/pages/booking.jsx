@@ -49,20 +49,70 @@ export default function Booking() {
     },
   });
 
-const onSubmit = () => {
-  console.log("from", form);
-  console.log("submitted");
+  const onSubmit = async (formData) => {
+    const { total } = calculatePrice(formData);
+    console.log("from", form);
+    console.log("submitted");
 
-  // ✅ Fire GA4 custom event
-  if (typeof window.gtag === "function") {
-    window.gtag("event", "generate_lead", {
-      value: 1,
-      currency: "USD"
-    });
-  } else {
-    console.warn("gtag not available");
-  }
-};
+    if (window.gtag) {
+      window.gtag("event", "generate_lead", {
+        event_category: "Booking",
+        event_label: "Estimate Form Submitted",
+        value: total,
+      });
+    }
+    window.gtag('event', 'generate_lead', {
+  send_to: 'G-8W7WSSFNC6',
+  event_category: 'lead',
+  event_label: 'Booking Wizard Complete',
+  value: 1
+});
+
+    const formattedTimes = Object.entries(formData.preferredTimes)
+      .map(([dateStr, timeStr]) => {
+        const date = new Date(dateStr);
+        const options = { weekday: "long", month: "long", day: "numeric" };
+        const formattedDate = date.toLocaleDateString("en-US", options);
+        return ` ${formattedDate}: \n${timeStr} `;
+      })
+      .join("\n\n");
+
+    const emailData = {
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      streetAddress: formData.streetAddress,
+      serviceType: formData.serviceType,
+      bedrooms: formData.bedrooms,
+      bathrooms: formData.bathrooms,
+      extras: formData.extras.join(", "),
+      propertyCondition: formData.propertyCondition,
+      hasPets: formData.hasPets,
+      accessMethod: formData.accessMethod.code,
+      specialNotes: formData.specialNotes,
+      totalPrice: total,
+      date: formData.preferredDates.join(", "),
+      time: formattedTimes,
+    };
+
+    try {
+      await emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, { ...emailData, admin_email: ADMIN_EMAIL }, USER_ID);
+
+      if (formData.sendNotifications) {
+        await emailjs.send(SERVICE_ID, USER_TEMPLATE_ID, {
+          ...emailData,
+          user_email: formData.email,
+        }, USER_ID);
+      }
+
+      form.reset();
+      setCurrentStep(0);
+      setShowBookingSteps(false);
+    } catch (error) {
+      console.error("Failed to send email:", error);
+    }
+  };
+
   const handleServiceSelect = (serviceType) => {
     form.reset();
     form.setValue("serviceType", serviceType);
