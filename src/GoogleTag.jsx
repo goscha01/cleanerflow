@@ -11,16 +11,24 @@ const GoogleTag = () => {
 
     // Initialize gtag
     window.dataLayer = window.dataLayer || [];
-    function gtag(){window.dataLayer.push(arguments);}
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
     window.gtag = gtag;
 
     gtag("js", new Date());
-    gtag("config", "G-8W7WSSFNC6"); // Google Analytics 4
-    gtag("config", "AW-17067419398"); // Your Google Ads conversion ID (optional)
+
+    // ✅ GA4 with debug mode for DebugView
+    gtag("config", "G-8W7WSSFNC6", {
+      debug_mode: true,
+    });
+
+    // Optional: Google Ads
+    gtag("config", "AW-17067419398");
 
   }, []);
 
-  return null; 
+  return null;
 };
 
 export default GoogleTag;
