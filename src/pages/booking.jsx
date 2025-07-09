@@ -49,24 +49,20 @@ export default function Booking() {
     },
   });
 
-  const onSubmit = async (formData) => {
-    const { total } = calculatePrice(formData);
-    console.log("from", form);
-    console.log("submitted");
+    const onSubmit = () => {
+      console.log("from", form);
+      console.log("submitted");
 
-    if (window.gtag) {
-      window.gtag("event", "generate_lead", {
-        event_category: "Booking",
-        event_label: "Estimate Form Submitted",
-        value: total,
-      });
-    }
-    window.gtag('event', 'generate_lead', {
-  send_to: 'G-8W7WSSFNC6',
-  event_category: 'lead',
-  event_label: 'Booking Wizard Complete',
-  value: 1
-});
+      // ✅ Fire GA4 custom event
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "generate_lead", {
+          value: 1,
+          currency: "USD"
+        });
+      } else {
+        console.warn("gtag not available");
+      }
+    };
 
     const formattedTimes = Object.entries(formData.preferredTimes)
       .map(([dateStr, timeStr]) => {
