@@ -56,17 +56,13 @@ export default function Booking() {
 
     if (window.gtag) {
       window.gtag("event", "generate_lead", {
+        send_to: "G-8W7WSSFNC6", // GA4 tag
         event_category: "Booking",
-        event_label: "Estimate Form Submitted",
+        event_label: "Booking Wizard Complete",
         value: total,
+        currency: "USD",
       });
     }
-    window.gtag('event', 'generate_lead', {
-  send_to: 'G-8W7WSSFNC6',
-  event_category: 'lead',
-  event_label: 'Booking Wizard Complete',
-  value: 1
-});
 
     const formattedTimes = Object.entries(formData.preferredTimes)
       .map(([dateStr, timeStr]) => {
@@ -96,13 +92,23 @@ export default function Booking() {
     };
 
     try {
-      await emailjs.send(SERVICE_ID, ADMIN_TEMPLATE_ID, { ...emailData, admin_email: ADMIN_EMAIL }, USER_ID);
+      await emailjs.send(
+        SERVICE_ID,
+        ADMIN_TEMPLATE_ID,
+        { ...emailData, admin_email: ADMIN_EMAIL },
+        USER_ID
+      );
 
       if (formData.sendNotifications) {
-        await emailjs.send(SERVICE_ID, USER_TEMPLATE_ID, {
-          ...emailData,
-          user_email: formData.email,
-        }, USER_ID);
+        await emailjs.send(
+          SERVICE_ID,
+          USER_TEMPLATE_ID,
+          {
+            ...emailData,
+            user_email: formData.email,
+          },
+          USER_ID
+        );
       }
 
       form.reset();
@@ -130,8 +136,7 @@ export default function Booking() {
         );
       case 1:
         return (
-          form.getValues("preferredDates") &&
-          form.getValues("preferredTimes")
+          form.getValues("preferredDates") && form.getValues("preferredTimes")
         );
       case 2:
         return form.getValues("streetAddress");
