@@ -51,7 +51,8 @@ export default function Booking() {
 
   const onSubmit = async (formData) => {
     const { total } = calculatePrice(formData);
-    console.log("submitted")
+    console.log("from", form);
+    console.log("submitted");
 
     if (window.gtag) {
       window.gtag("event", "generate_lead", {
