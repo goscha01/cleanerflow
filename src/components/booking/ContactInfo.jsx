@@ -90,7 +90,10 @@ export default function ContactInfo({ form }) {
           onCheckedChange={(checked) => setSendNotifications(checked)}
         />
         <label htmlFor="notifications" className="text-gray-700 text-sm">
-          Send me notifications about this service request via text message
+          By providing your phone number, you agree to receive SMS from Spotless Homes. 
+          Message frequency may vary. Standard Message and Data Rates may apply. 
+          Reply STOP to opt out. Reply HELP for help. 
+          We will not share mobile information with third parties for promotional or marketing purposes.
         </label>
       </div>
       {/* <div className="mt-4">
