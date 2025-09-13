@@ -47,7 +47,7 @@ export default function ServiceCards({ onServiceSelect }) {
               onClick={() => {
                 onServiceSelect(service.id);
               }}
-              className="h-full"
+              className="h-full aspect-square lg:aspect-auto"
             >
               <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors h-full">
                 <CardContent className="p-3 lg:p-6 flex flex-col items-center text-center h-full">
