@@ -38,7 +38,7 @@ export default function ServiceCards({ onServiceSelect }) {
           </div>
         </div> */}
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-8 md:mx-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-4 lg:mt-8 md:mx-24">
           {services.map((service) => (
             <motion.div
               key={service.id}
@@ -50,13 +50,13 @@ export default function ServiceCards({ onServiceSelect }) {
               className="h-full"
             >
               <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors h-full">
-                <CardContent className="p-3 flex flex-col items-center text-center h-full">
+                <CardContent className="p-3 lg:p-6 flex flex-col items-center text-center h-full">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-16 object-cover rounded-md mb-2"
+                    className="w-full h-16 lg:h-32 object-cover rounded-md mb-2 lg:mb-4"
                   />
-                  <h3 className="text-md font-bold">{service.title}</h3>
+                  <h3 className="text-md font-bold lg:mb-2">{service.title}</h3>
                 </CardContent>
               </Card>
             </motion.div>
