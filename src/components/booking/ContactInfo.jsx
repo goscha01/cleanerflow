@@ -44,10 +44,10 @@ export default function ContactInfo({ form }) {
 
   return (
     <div className="px-4">
-      <h2 className="text-2xl font-semibold text-gray-700 mb-1">
+      <h2 className="text-2xl font-semibold text-gray-700 mb-1 text-left">
         Contact Information
       </h2>
-      <p className="text-[16px] text-gray-600 mb-6 text-justify">
+      <p className="text-[16px] text-gray-600 mb-6 text-left">
         Please provide your contact details so we can reach you to confirm your
         booking
       </p>

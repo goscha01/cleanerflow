@@ -134,8 +134,10 @@ export default function ServiceAddress({ form, nextStep }) {
   );
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold text-gray-700 mb-6">
+    <div className="h-full">
+      <div className="bg-white rounded-lg border p-6 h-full flex flex-col justify-between">
+        <div>
+      <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-left">
         Service Address
       </h2>
 
@@ -230,10 +232,11 @@ export default function ServiceAddress({ form, nextStep }) {
               />
             )}
           </div>
+          </div>
+        )}
         </div>
-      )}
 
-      <div className="mt-16 mb-16 flex justify-start">
+        <div className="mt-16 mb-16 flex justify-start">
         <Button
           type="button"
           onClick={nextStep}
@@ -243,9 +246,10 @@ export default function ServiceAddress({ form, nextStep }) {
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-primary hover:bg-primary/90"
           }`}
-        >
-          Continue
-        </Button>
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   );
