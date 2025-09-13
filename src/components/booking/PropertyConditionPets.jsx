@@ -9,34 +9,14 @@ export default function PropertyConditionPets({ form, nextStep }) {
   const conditionRef = useRef(null);
   const petRef = useRef(null);
 
-  const scrollToSection = (ref) => {
-    const offset = 130;
-    if (ref.current) {
-      const top =
-        ref.current.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  };
-
-  useEffect(() => {
-    const errors = form.formState.errors;
-    if (errors.propertyCondition) {
-      scrollToSection(conditionRef);
-    } else if (errors.hasPets) {
-      scrollToSection(petRef);
-    }
-  }, [form.formState.errors.propertyCondition, form.formState.errors.hasPets]);
+  // Removed scrollToSection function and all scrolling behavior
 
   const handleConditionSelect = (conditionId) => {
     form.setValue("propertyCondition", conditionId);
     form.clearErrors("propertyCondition");
   };
 
-  useEffect(() => {
-    if (form.watch("propertyCondition")) {
-      scrollToSection(petRef);
-    }
-  }, [form.watch("propertyCondition")]);
+  // Removed auto-scroll to pets section
 
   return (
     <div className="h-full lg:h-[580px] flex flex-col">

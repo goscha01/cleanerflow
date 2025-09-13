@@ -131,7 +131,6 @@ export default function Booking() {
     form.setValue("serviceType", serviceType);
     setShowBookingSteps(true);
     setShowConfirmation(false);
-    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const handleEditBooking = () => {
@@ -143,7 +142,6 @@ export default function Booking() {
       setShowBookingSteps(true);
       setShowConfirmation(false);
       setCurrentStep(4); // Go to last step (Contact/Submit step)
-      window.scrollTo({ top: 0, behavior: "instant" });
     }
   };
 
@@ -153,7 +151,6 @@ export default function Booking() {
     setShowBookingSteps(false);
     setShowConfirmation(false);
     setCurrentStep(0);
-    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const validateCurrentStep = () => {
@@ -196,7 +193,6 @@ export default function Booking() {
 
     if (currentStep < TOTAL_STEPS - 1) {
       setCurrentStep(currentStep + 1);
-      window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       formRef.current?.requestSubmit();
     }
@@ -208,7 +204,6 @@ export default function Booking() {
     } else {
       setShowBookingSteps(false);
     }
-    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   if (!showBookingSteps && !showConfirmation) {

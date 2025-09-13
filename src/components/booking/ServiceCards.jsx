@@ -38,21 +38,19 @@ export default function ServiceCards({ onServiceSelect }) {
           </div>
         </div> */}
 
-        <h2 className="text-3xl font-semibold text-gray-900">Select Service</h2>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-8 md:mx-24">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mt-8 md:mx-24">
           {services.map((service) => (
             <motion.div
               key={service.id}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
-                window.scrollTo({ top: 0, behavior: "instant" });
                 onServiceSelect(service.id);
               }}
+              className="h-full"
             >
-              <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors">
-                <CardContent className="p-6 flex flex-col items-center text-center">
+              <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors h-full">
+                <CardContent className="p-6 flex flex-col items-center text-center h-full">
                   <img
                     src={service.image}
                     alt={service.title}

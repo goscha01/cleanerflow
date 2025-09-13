@@ -36,36 +36,8 @@ export default function PropertyDetails({ form, nextStep }) {
     }
   }, [form]);
 
-  const scrollToSection = (ref) => {
-    const offset = 130;
-    if (ref.current) {
-      const top =
-        ref.current.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  };
-  // Validation error scroll handling
-  useEffect(() => {
-    const errors = form.formState.errors;
-    if (
-      (errors.bedrooms && errors.bathrooms && errors.propertyCondition) ||
-      (errors.bedrooms && errors.bathrooms) ||
-      errors.bedrooms
-    ) {
-      scrollToSection(bedroomsRef);
-    } else if (
-      errors.bathrooms ||
-      (errors.bathrooms && errors.propertyCondition)
-    ) {
-      scrollToSection(bathroomsRef);
-    } else if (errors.propertyCondition) {
-      scrollToSection(conditionRef);
-    }
-  }, [
-    form.formState.errors.bedrooms,
-    form.formState.errors.bathrooms,
-    form.formState.errors.propertyCondition,
-  ]);
+  // Removed scrollToSection function
+  // Removed validation error scroll handling
 
   const handleBedroomSelect = (num) => {
     form.setValue("bedrooms", num);
@@ -82,38 +54,7 @@ export default function PropertyDetails({ form, nextStep }) {
     form.clearErrors("propertyCondition");
   };
 
-  // Auto-scroll on selection
-  useEffect(() => {
-    const selectedBathrooms = form.watch("bedrooms");
-    if (selectedBathrooms && selectedBathrooms > 1) {
-      scrollToSection(bathroomsRef);
-    }
-  }, [form.watch("bedrooms")]);
-
-  useEffect(() => {
-    const selectedBathrooms = form.watch("bathrooms");
-    if (selectedBathrooms && selectedBathrooms > 1) {
-      scrollToSection(extrasRef);
-    }
-  }, [form.watch("bathrooms")]);
-
-  useEffect(() => {
-    if (form.watch("propertyCondition")) {
-      scrollToSection(petRef);
-    }
-  }, [form.watch("propertyCondition")]);
-
-  useEffect(() => {
-    if (form.watch("hasPets")) {
-      scrollToSection(continueBtton);
-    }
-  }, [form.watch("hasPets")]);
-
-  useEffect(() => {
-    if (form.watch("accessMethod")) {
-      scrollToSection(noteRef);
-    }
-  }, [form.watch("accessMethod")]);
+  // Removed all auto-scroll on selection effects
 
   return (
     <div className="space-y-8">

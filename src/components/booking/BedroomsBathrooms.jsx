@@ -25,23 +25,7 @@ export default function BedroomsBathrooms({ form, nextStep }) {
     }
   }, [form]);
 
-  const scrollToSection = (ref) => {
-    const offset = 130;
-    if (ref.current) {
-      const top =
-        ref.current.getBoundingClientRect().top + window.scrollY - offset;
-      window.scrollTo({ top, behavior: "smooth" });
-    }
-  };
-
-  useEffect(() => {
-    const errors = form.formState.errors;
-    if (errors.bedrooms) {
-      scrollToSection(bedroomsRef);
-    } else if (errors.bathrooms) {
-      scrollToSection(bathroomsRef);
-    }
-  }, [form.formState.errors.bedrooms, form.formState.errors.bathrooms]);
+  // Removed scrollToSection function and error scrolling
 
   const handleBedroomSelect = (num) => {
     form.setValue("bedrooms", num);
@@ -53,12 +37,7 @@ export default function BedroomsBathrooms({ form, nextStep }) {
     form.clearErrors("bathrooms");
   };
 
-  useEffect(() => {
-    const selectedBedrooms = form.watch("bedrooms");
-    if (selectedBedrooms && selectedBedrooms > 0) {
-      scrollToSection(bathroomsRef);
-    }
-  }, [form.watch("bedrooms")]);
+  // Removed auto-scroll to bathrooms section
 
   return (
     <div className="h-full lg:h-[580px] flex flex-col">

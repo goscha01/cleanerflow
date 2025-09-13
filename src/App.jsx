@@ -9,16 +9,7 @@ import GoogleTag from "./GoogleTag";
 
 ReactGA.initialize('G-8W7WSSFNC6');
 
-// ScrollToTop component to reset scroll position on route change
-function ScrollToTop() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
-  return null;
-}
+// ScrollToTop component disabled - removed automatic scroll to top
 
 function GAListener() {
   const location = useLocation();
@@ -33,7 +24,6 @@ function App() {
   return (
     <BrowserRouter>
       <GoogleTag />
-      <ScrollToTop />
       <GAListener /> {/* Track GA4 page views */}
       <Routes>
         <Route path="/" element={<Booking />} />
