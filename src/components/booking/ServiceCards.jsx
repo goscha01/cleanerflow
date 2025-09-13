@@ -50,13 +50,13 @@ export default function ServiceCards({ onServiceSelect }) {
               className="h-full"
             >
               <Card className="cursor-pointer hover:border-primary hover:text-primary transition-colors h-full">
-                <CardContent className="p-6 flex flex-col items-center text-center h-full">
+                <CardContent className="p-3 flex flex-col items-center text-center h-full">
                   <img
                     src={service.image}
                     alt={service.title}
-                    className="w-full h-32 object-cover rounded-md mb-4"
+                    className="w-full h-16 object-cover rounded-md mb-2"
                   />
-                  <h3 className="text-md font-bold mb-2">{service.title}</h3>
+                  <h3 className="text-md font-bold">{service.title}</h3>
                 </CardContent>
               </Card>
             </motion.div>
