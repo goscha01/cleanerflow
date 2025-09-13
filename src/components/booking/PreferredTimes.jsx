@@ -120,9 +120,9 @@ export default function PreferredTimes({ form, nextStep }) {
       console.log("Setting selectedDates to:", [normalizedDate]);
       
       setSelectedDates([normalizedDate]);
-      setSelectedTimes({ [dateKey]: ["Before noon"] });
+      setSelectedTimes({});
       form.setValue("preferredDates", [dateKey]);
-      form.setValue("preferredTimes", { [dateKey]: ["Before noon"] });
+      form.setValue("preferredTimes", {});
     }, 100);
     
     return () => clearTimeout(timer);
@@ -131,11 +131,7 @@ export default function PreferredTimes({ form, nextStep }) {
   // Validation logic
   useEffect(() => {
     if (selectedDates.length === 0) {
-      setError("Please select one or more dates.");
-    } else if (
-      Object.values(selectedTimes).every((times) => times.length === 0)
-    ) {
-      setError("Please select at least one time slot.");
+      setError("Please select one or more dates and time.");
     } else {
       setError("");
     }
@@ -252,17 +248,24 @@ export default function PreferredTimes({ form, nextStep }) {
               </div>
             )}
 
-          {error && <p className={`text-sm text-center ${error.includes("Please select one or more dates") ? "text-primary" : "text-red-500"}`}>{error}</p>}
+          {error && <p className="text-sm text-center text-primary">{error}</p>}
         </div>
 
         <div className="mt-6 lg:mt-6 flex justify-between items-center">
           <Button
             type="button"
             onClick={() => {
-              // Since date is already preselected, just open time popup for the preselected date
+              // Check if time is already selected
               if (selectedDates.length > 0) {
                 const dateKey = format(selectedDates[0], "yyyy-MM-dd");
-                setActiveDate(dateKey);
+                
+                // If time is already selected, go to next step
+                if (selectedTimes[dateKey] && selectedTimes[dateKey].length > 0) {
+                  nextStep();
+                } else {
+                  // If no time selected, open time popup
+                  setActiveDate(dateKey);
+                }
               }
             }}
             className="continue-button px-6 py-4 text-sm text-white bg-primary hover:bg-primaryHover whitespace-nowrap"
