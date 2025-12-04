@@ -4,6 +4,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { X as CloseIcon, Search as SearchIcon } from "lucide-react";
 
+// Phone validation function
+const validatePhone = (phone) => {
+  if (!phone) return false;
+  // Remove all non-digit characters for validation
+  const digitsOnly = phone.replace(/\D/g, '');
+  // Check if it has 10 or 11 digits (11 if includes country code)
+  return digitsOnly.length === 10 || (digitsOnly.length === 11 && digitsOnly[0] === '1');
+};
+
 export default function AddressContactInfo({ form, nextStep }) {
   // Service Address states
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,7 +70,9 @@ export default function AddressContactInfo({ form, nextStep }) {
 
   useEffect(() => {
     const streetAddress = form.watch("streetAddress");
-    const isFormValid = streetAddress?.trim() && formData.name && formData.phone && formData.email;
+    const phone = formData.phone;
+    const isPhoneValid = validatePhone(phone);
+    const isFormValid = streetAddress?.trim() && formData.name && isPhoneValid && formData.email;
     setIsButtonDisabled(!isFormValid);
     setErrors(!isFormValid);
   }, [form.watch("streetAddress"), formData.name, formData.phone, formData.email]);
@@ -277,11 +288,23 @@ export default function AddressContactInfo({ form, nextStep }) {
                 <div className="w-full sm:w-[49%]">
                   <Input
                     id="phone"
-                    placeholder="Phone Number"
-                    {...form.register("phone")}
+                    placeholder="Phone Number *"
+                    required
+                    {...form.register("phone", {
+                      required: "Phone number is required",
+                      validate: (value) => {
+                        if (!validatePhone(value)) {
+                          return "Please enter a valid phone number";
+                        }
+                        return true;
+                      }
+                    })}
                     className="w-full py-4 md:py-6 rounded-xl text-sm md:text-base focus:outline-none focus:ring-0 focus:border-primary"
                     style={{ fontSize: "14px" }}
                   />
+                  {form.formState.errors.phone && (
+                    <p className="text-sm text-red-500 mt-1">{form.formState.errors.phone.message}</p>
+                  )}
                 </div>
                 <div className="w-full sm:w-[49%]">
                   <Input
