@@ -318,19 +318,26 @@ export default function AddressContactInfo({ form, nextStep }) {
                 </div>
               </div>
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-start gap-2">
                 <Checkbox
                   id="notifications"
                   checked={sendNotifications}
                   onCheckedChange={(checked) => setSendNotifications(checked)}
+                  className="mt-0.5"
                 />
                 <label htmlFor="notifications" className="text-gray-700 text-sm">
-                  I agree to receive SMS messages related to my service request.
-                  <span className="block text-xs text-gray-500 mt-1">
-                    By providing your phone number, you agree to receive text messages related to your service request, including appointment confirmations, updates, and customer support. Message frequency may vary. Message and data rates may apply. Reply STOP to unsubscribe. Reply HELP for assistance.
-                  </span>
+                  I agree to receive SMS messages related to my service request at the phone number provided.
                 </label>
               </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Message frequency may vary. Message and data rates may apply. Reply STOP to unsubscribe. Reply HELP for assistance.
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                See our{' '}
+                <a href="https://geos-ai.com/privacy.html" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primaryHover">Privacy Policy</a>,{' '}
+                <a href="https://geos-ai.com/terms.html" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primaryHover">Terms of Service</a>, and{' '}
+                <a href="https://geos-ai.com/sms-policy.html" target="_blank" rel="noopener noreferrer" className="underline text-primary hover:text-primaryHover">SMS Policy</a>.
+              </p>
             </div>
           </section>
         </div>
