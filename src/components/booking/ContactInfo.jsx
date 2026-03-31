@@ -9,7 +9,7 @@ const VITE_COUPON_CODE = import.meta.env.VITE_COUPON_CODE;
 
 export default function ContactInfo({ form }) {
   const formData = form.watch();
-  const [sendNotifications, setSendNotifications] = useState(true);
+  const [sendNotifications, setSendNotifications] = useState(false);
   const [errors, setErrors] = useState(true);
   const [coupon, setCoupon] = useState("");
   const [couponError, setCouponError] = useState("");
@@ -90,10 +90,10 @@ export default function ContactInfo({ form }) {
           onCheckedChange={(checked) => setSendNotifications(checked)}
         />
         <label htmlFor="notifications" className="text-gray-700 text-sm">
-          By providing your phone number, you agree to receive marketing SMS from Spotless Homes. 
-          Message frequency may vary. Standard Message and Data Rates may apply. 
-          Reply STOP to opt out. Reply HELP for help. 
-          We will not share mobile information with third parties for promotional or marketing purposes.
+          I agree to receive SMS messages related to my service request.
+          <span className="block text-xs text-gray-500 mt-1">
+            By providing your phone number, you agree to receive text messages related to your service request, including appointment confirmations, updates, and customer support. Message frequency may vary. Message and data rates may apply. Reply STOP to unsubscribe. Reply HELP for assistance.
+          </span>
         </label>
       </div>
       {/* <div className="mt-4">

@@ -49,7 +49,7 @@ export default function Booking() {
       name: "",
       phone: "",
       email: "",
-      sendNotifications: true,
+      sendNotifications: false,
       isEstimateOnly: false,
     },
   });
